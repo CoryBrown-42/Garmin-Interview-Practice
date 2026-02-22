@@ -145,7 +145,7 @@ export default function App() {
 
   const checkSolution = async () => {
     setOutput("✨ AI Coach is reviewing your code for performance and correctness...");
-    const system = `You are a Senior Unity Tech Artist Interviewer at Garmin Cary. 
+    const system = `You are a Senior Unity Tech Artist Interviewer. 
     Evaluate the user's code for: "${exercise.prompt}". 
     Be strict about Garbage Collection and performance.
     Return JSON: { "correct": boolean, "feedback": "string", "hints": ["string"] }`;
@@ -234,7 +234,7 @@ export default function App() {
             Senior Tech Artist Simulator
           </h1>
           <p className="text-slate-400 flex items-center gap-2">
-            Garmin Cary Onsite Prep 
+            Interview Prep 
             <span className="bg-indigo-500/20 text-indigo-400 px-2 py-0.5 rounded text-[10px] font-bold">AI ENHANCED</span>
           </p>
         </div>
@@ -426,7 +426,7 @@ export default function App() {
            <span>•</span>
            <span>Shader Pipeline</span>
          </div>
-         <p>© {new Date().getFullYear()} Garmin Interview AI Coach. Go get 'em, Cory!</p>
+         <p>© {new Date().getFullYear()} Tech Artist Interview AI Coach</p>
       </footer>
     </div>
   );
