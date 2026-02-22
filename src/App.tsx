@@ -7,14 +7,14 @@ import {
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInAnonymously } from 'firebase/auth';
 
-// Initial Mock Exercise Data
+// Initial Mock Exercise Data — Tailored to Garmin Senior Unity Technical Artist (Home Tee Hero)
 const INITIAL_EXERCISES = [
   {
     id: 1,
     title: "GC Optimization (UI Dashboard)",
     category: "C# / Performance",
     difficulty: "Medium",
-    prompt: "Refactor the 'UpdateDashboard' method to eliminate per-frame garbage collection. Use a StringBuilder or cached references.",
+    prompt: "Refactor the 'UpdateDashboard' method to eliminate per-frame garbage collection. Use a StringBuilder or cached references. This is critical for Garmin wearable/embedded targets where GC spikes cause frame drops.",
     initialCode: `using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
@@ -37,17 +37,18 @@ public class DashboardController : MonoBehaviour {
   },
   {
     id: 2,
-    title: "3D Math (Golf Hit Detection)",
+    title: "3D Math (Golf Ball Trajectory)",
     category: "Vector Math",
     difficulty: "Hard",
-    prompt: "Determine if a ball velocity is within a 30-degree cone of the screen's normal vector. Return true if valid.",
+    prompt: "For Garmin's Home Tee Hero golf simulator: determine if a ball velocity is within a 30-degree cone of the screen's normal vector. Return true if the hit is valid. Think about dot product and angle thresholds.",
     initialCode: `using UnityEngine;
 
-public class PhysicsLogic {
+public class GolfPhysics {
+    // Used by Home Tee Hero to validate launch monitor data
     public bool IsValidHit(Vector3 ballVelocity, Vector3 screenNormal) {
         if (ballVelocity.sqrMagnitude < 0.001f) return false;
         
-        // Your code here
+        // Your code here — use dot product to check angle
         return false;
     }
 }`,
@@ -55,15 +56,16 @@ public class PhysicsLogic {
   },
   {
     id: 3,
-    title: "Shader Logic (Pulse Effect)",
-    category: "HLSL",
+    title: "Shader (Terrain Pulse Effect)",
+    category: "HLSL / ShaderLab",
     difficulty: "Medium",
-    prompt: "Calculate a 'pulse' factor (0-1) using _Time.y and _PulseSpeed that oscillates smoothly.",
-    initialCode: `// HLSL Snippet
+    prompt: "Write a pulse factor (0–1) in a Built-in Render Pipeline fragment shader using _Time.y and _PulseSpeed. This is used to highlight fairway zones on the golf course in Home Tee Hero.",
+    initialCode: `// Built-in Render Pipeline — HLSL snippet
+// ShaderLab / CG fragment function
 fixed4 frag (v2f i) : SV_Target {
     float pulseSpeed = _PulseSpeed;
     
-    // Calculate pulse here
+    // Calculate a smooth 0-1 oscillating pulse
     float pulse = 0.0; 
     
     float4 finalColor = lerp(_BaseColor, _HighlightColor, pulse);
@@ -76,18 +78,234 @@ fixed4 frag (v2f i) : SV_Target {
     title: "Asset Pipeline Audit",
     category: "Editor Scripting",
     difficulty: "Hard",
-    prompt: "Write a script that finds all textures in a path and logs those with max size > 512 or mipmaps enabled.",
+    prompt: "Write a Unity Editor script that finds all textures in a given folder path and logs those with maxTextureSize > 512 or mipmaps enabled. At Garmin, oversized textures tank tile-based mobile GPU performance.",
     initialCode: `using UnityEditor;
 using UnityEngine;
 
 public class AssetAuditor {
-    public void AuditFolder(string path) {
+    [MenuItem("Garmin/Audit Textures")]
+    public static void AuditFolder() {
+        string path = "Assets/Textures/Courses";
         string[] guids = AssetDatabase.FindAssets("t:Texture", new[] { path });
         
-        // Loop and check maxTextureSize and mipmapEnabled
+        foreach (string guid in guids) {
+            string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+            // TODO: Get the TextureImporter and check maxTextureSize, mipmapEnabled
+        }
     }
 }`,
     solutionKeywords: ["AssetImporter.GetAtPath", "TextureImporter", "maxTextureSize", "mipmapEnabled"]
+  },
+  {
+    id: 5,
+    title: "Tile-Based GPU Optimization",
+    category: "Rendering / Mobile",
+    difficulty: "Hard",
+    prompt: "Garmin's Home Tee Hero runs on iOS/Android tile-based GPUs. Write a C# method that analyzes a list of materials and returns those that would cause overdraw issues (transparent materials with high render queue). Explain why tile-based GPUs are especially sensitive to overdraw.",
+    initialCode: `using UnityEngine;
+using System.Collections.Generic;
+
+public class TileGPUOptimizer {
+    // Tile-based GPUs (Apple A-series, Qualcomm Adreno) 
+    // process fragments per-tile — overdraw is extremely costly
+    
+    public List<Material> FindOverdrawRisks(Material[] allMaterials) {
+        List<Material> problematic = new List<Material>();
+        
+        foreach (Material mat in allMaterials) {
+            // TODO: Check render queue, shader keywords for transparency
+            // Flag materials that would cause overdraw on tile-based GPUs
+        }
+        
+        return problematic;
+    }
+}`,
+    solutionKeywords: ["renderQueue", "3000", "Transparent", "SetOverrideTag", "ZWrite"]
+  },
+  {
+    id: 6,
+    title: "Procedural Golf Course Mesh",
+    category: "Procedural Geometry",
+    difficulty: "Hard",
+    prompt: "Generate a procedural mesh strip for a golf fairway given a list of center points and a width. Calculate vertices, normals, UVs, and triangles. This is core to how Home Tee Hero generates course geometry at runtime.",
+    initialCode: `using UnityEngine;
+using System.Collections.Generic;
+
+public class FairwayMeshGenerator : MonoBehaviour {
+    public float fairwayWidth = 10f;
+    
+    public Mesh GenerateFairwayStrip(Vector3[] centerPoints) {
+        Mesh mesh = new Mesh();
+        
+        List<Vector3> vertices = new List<Vector3>();
+        List<Vector3> normals = new List<Vector3>();
+        List<Vector2> uvs = new List<Vector2>();
+        List<int> triangles = new List<int>();
+        
+        for (int i = 0; i < centerPoints.Length; i++) {
+            // TODO: For each center point, create left/right vertices
+            // Calculate perpendicular direction for width
+            // Generate proper UVs and triangle indices
+        }
+        
+        mesh.SetVertices(vertices);
+        mesh.SetNormals(normals);
+        mesh.SetUVs(0, uvs);
+        mesh.SetTriangles(triangles, 0);
+        return mesh;
+    }
+}`,
+    solutionKeywords: ["Cross", "Vector3.up", "normalized", "triangles", "SetVertices", "UV"]
+  },
+  {
+    id: 7,
+    title: "Python Texture Batch Tool",
+    category: "Python / Pipeline",
+    difficulty: "Medium",
+    prompt: "Write a Python script that walks a directory tree, finds all .png and .tga files larger than 2MB, and outputs a CSV report with filename, size, and resolution. This type of tool is part of daily Garmin art pipeline work.",
+    initialCode: `import os
+import csv
+from pathlib import Path
+# You may assume PIL/Pillow is available
+from PIL import Image
+
+def audit_textures(root_dir: str, output_csv: str, max_size_mb: float = 2.0):
+    """Find oversized textures and write a CSV report."""
+    results = []
+    
+    # TODO: Walk directory tree
+    # Find .png and .tga files
+    # Check file size against threshold
+    # Get image resolution
+    # Collect results and write to CSV
+    
+    pass`,
+    solutionKeywords: ["os.walk", "os.path.getsize", "Image.open", "csv.writer", "writerow"]
+  },
+  {
+    id: 8,
+    title: "Draw Call Batching Analysis",
+    category: "C# / Profiling",
+    difficulty: "Medium",
+    prompt: "Write a method that analyzes a scene's renderers and groups them by shared material. Report how many draw calls could be saved through static/dynamic batching. Understanding batching is essential for hitting frame budgets on Garmin's mobile hardware.",
+    initialCode: `using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
+
+public class BatchingAnalyzer {
+    public struct BatchReport {
+        public string materialName;
+        public int rendererCount;
+        public int potentialSavedDrawCalls;
+    }
+    
+    public List<BatchReport> AnalyzeScene() {
+        Renderer[] allRenderers = Object.FindObjectsOfType<Renderer>();
+        
+        // TODO: Group renderers by sharedMaterial
+        // Calculate potential draw call savings
+        // Return a list of BatchReport
+        
+        return new List<BatchReport>();
+    }
+}`,
+    solutionKeywords: ["sharedMaterial", "GroupBy", "Dictionary", "drawCall", "Count"]
+  },
+  {
+    id: 9,
+    title: "Shader — UV Distortion (Water Hazard)",
+    category: "HLSL / ShaderLab",
+    difficulty: "Hard",
+    prompt: "Write a fragment shader UV distortion effect for a golf course water hazard using scrolling noise. Must work in Unity's Built-in Render Pipeline. Keep it mobile-friendly — avoid dependent texture reads where possible.",
+    initialCode: `// Built-in Render Pipeline — Water surface shader
+// Properties: _NoiseTex, _ScrollSpeed, _DistortionStrength, _WaterColor
+
+fixed4 frag (v2f i) : SV_Target {
+    float2 uv = i.uv;
+    
+    // TODO: Scroll the noise texture over time
+    // Sample noise and use it to distort the main UV
+    // Keep it tile-based GPU friendly (minimize dependent reads)
+    
+    float4 waterColor = _WaterColor;
+    return waterColor;
+}`,
+    solutionKeywords: ["_Time.y", "tex2D", "_NoiseTex", "uv +", "ScrollSpeed", "DistortionStrength"]
+  },
+  {
+    id: 10,
+    title: "Git LFS & Asset Workflow",
+    category: "Pipeline / Version Control",
+    difficulty: "Medium",
+    prompt: "Write a .gitattributes configuration for a Unity golf course project. Track appropriate binary files with Git LFS (textures, meshes, audio). Explain why improper LFS config bloats repos for distributed art teams.",
+    initialCode: `# .gitattributes for Garmin Unity Golf Project
+# Configure Git LFS tracking for large binary assets
+# Configure Unity-specific merge strategies
+
+# TODO: Add LFS tracking rules for:
+# - Textures (.png, .tga, .psd, .tiff, .exr)
+# - 3D Models (.fbx, .obj, .blend, .max)  
+# - Audio (.wav, .mp3, .ogg)
+# - Unity-specific (.asset, .unity, .prefab)
+# - Substance files (.sbs, .sbsar)
+
+# TODO: Add Unity YAML merge strategy`,
+    solutionKeywords: ["filter=lfs", "diff=lfs", "merge=lfs", "binary", "*.fbx", "*.png", "unityyamlmerge"]
+  },
+  {
+    id: 11,
+    title: "PBR Material Validator",
+    category: "C# / Rendering",
+    difficulty: "Medium",
+    prompt: "Write a Unity Editor tool that validates PBR materials in a scene: check that albedo textures aren't too dark/bright (energy conservation), metallic maps are binary-ish, and normal maps are set to the correct texture type. Garmin's art team needs this for QA across distributed teams.",
+    initialCode: `using UnityEditor;
+using UnityEngine;
+
+public class PBRValidator {
+    [MenuItem("Garmin/Validate PBR Materials")]
+    public static void ValidateAll() {
+        Renderer[] renderers = Object.FindObjectsOfType<Renderer>();
+        
+        foreach (Renderer r in renderers) {
+            foreach (Material mat in r.sharedMaterials) {
+                if (mat == null) continue;
+                
+                // TODO: Check _MainTex average luminance (should be 30-240 range)
+                // TODO: Check _MetallicGlossMap for non-binary values
+                // TODO: Check _BumpMap texture import settings (must be Normal Map type)
+            }
+        }
+    }
+}`,
+    solutionKeywords: ["GetPixels", "TextureImporter", "textureType", "NormalMap", "luminance"]
+  },
+  {
+    id: 12,
+    title: "LOD Distance Calculator",
+    category: "C# / Optimization",
+    difficulty: "Medium",
+    prompt: "Write a utility that, given a camera FOV and screen height, calculates the optimal LOD transition distances for golf course objects (trees, bunkers, buildings) based on their bounding box size and a target pixel coverage threshold. This prevents popping artifacts on Garmin devices.",
+    initialCode: `using UnityEngine;
+
+public class LODCalculator {
+    /// <summary>
+    /// Calculate the distance at which an object of the given world-space 
+    /// height should switch to a lower LOD level.
+    /// </summary>
+    public static float CalculateLODDistance(
+        float objectHeight,
+        float screenCoverageThreshold, // e.g., 0.25 = 25% of screen
+        float cameraFOV,
+        float screenHeight)
+    {
+        // TODO: Use perspective projection math to find distance
+        // where the object covers 'screenCoverageThreshold' of the screen.
+        // Formula relates FOV, screen height, object size, and distance.
+        
+        return 0f;
+    }
+}`,
+    solutionKeywords: ["Mathf.Tan", "FOV", "screenHeight", "objectHeight", "distance"]
   }
 ];
 
@@ -145,9 +363,12 @@ export default function App() {
 
   const checkSolution = async () => {
     setOutput("✨ AI Coach is reviewing your code for performance and correctness...");
-    const system = `You are a Senior Unity Tech Artist Interviewer. 
+    const system = `You are a Senior Unity Technical Artist Interviewer at Garmin (Cary, NC). 
+    The candidate is interviewing for the Home Tee Hero golf simulator team.
     Evaluate the user's code for: "${exercise.prompt}". 
-    Be strict about Garbage Collection and performance.
+    Be strict about: GC allocation, tile-based mobile GPU constraints (iOS/Android), 
+    Built-in Render Pipeline best practices, and draw call / overdraw concerns.
+    Consider performance on Garmin's embedded hardware.
     Return JSON: { "correct": boolean, "feedback": "string", "hints": ["string"] }`;
     
     const result = await callGemini(system, `Exercise: ${exercise.title}\nCode:\n${code}`);
@@ -161,14 +382,14 @@ export default function App() {
 
   const getAiHint = async () => {
     setOutput("✨ Generating a helpful hint...");
-    const system = `Provide a subtle hint for the following coding task without giving away the full answer. Be technical. Focus on Unity best practices.`;
+    const system = `Provide a subtle hint for the following coding task without giving away the full answer. Be technical. Focus on Unity Built-in Render Pipeline best practices, mobile tile-based GPU optimization, and Garmin embedded hardware constraints. The candidate is preparing for a Garmin Senior Unity Technical Artist interview (Home Tee Hero golf simulator).`;
     const result = await callGemini(system, `Task: ${exercise.prompt}\nMy Current Code: ${code}`, false);
     setOutput(result || "Could not generate hint.");
   };
 
   const getSolution = async () => {
     setOutput("✨ Generating model solution and explanation...");
-    const system = `Provide the optimal solution for the following Unity Tech Artist task. Explain why this solution is better for a performance-critical environment like Garmin (wearables/embedded).`;
+    const system = `Provide the optimal solution for the following Unity Tech Artist task. Explain why this solution is optimal for Garmin's Home Tee Hero golf simulator running on tile-based mobile GPUs (iOS/Android). Reference Built-in Render Pipeline specifics, draw call batching, GC avoidance, and mobile profiling tools (Unity Profiler, Snapdragon Profiler, Xcode Instruments) where relevant.`;
     const result = await callGemini(system, `Task: ${exercise.prompt}`, false);
     setOutput(result || "Could not generate solution.");
   };
@@ -177,8 +398,11 @@ export default function App() {
     if (!aiCustomInput) return;
     setIsAiLoading(true);
     const system = `Generate a new technical artist interview coding exercise based on the user's topic. 
-    It must be related to Garmin products (Golf simulators, GPS, Aviation, Wearables).
-    Include a title, category, difficulty, prompt, and some initial boilerplate code.
+    Context: Garmin's Senior Unity Technical Artist role on the Home Tee Hero golf simulator team.
+    Key areas: Built-in Render Pipeline, tile-based mobile GPU optimization (iOS/Android),
+    HLSL/ShaderLab shaders, procedural geometry, C#/Python tooling, Git LFS for art repos,
+    PBR validation, draw call profiling, and texture/asset pipeline automation.
+    Include a title, category, difficulty, prompt, and realistic initial boilerplate code.
     Return JSON: { "id": number, "title": "string", "category": "string", "difficulty": "string", "prompt": "string", "initialCode": "string" }`;
     
     const result = await callGemini(system, `Topic: ${aiCustomInput}`);
@@ -310,7 +534,7 @@ export default function App() {
               <button 
                 onClick={async () => {
                    setOutput("✨ Explaining technical concept...");
-                   const res = await callGemini("Explain the technical concept behind this specific Unity Task in depth for a Senior Engineer. Focus on hardware implications and engine architecture.", `Task: ${exercise.title}\nCategory: ${exercise.category}`, false);
+                   const res = await callGemini("Explain the technical concept behind this specific Unity Task in depth for a Senior Technical Artist at Garmin. Focus on: tile-based mobile GPU architecture (iOS/Android), Built-in Render Pipeline internals, hardware implications for embedded Garmin devices, and how this applies to the Home Tee Hero golf simulator. Include what an interviewer would expect you to know.", `Task: ${exercise.title}\nCategory: ${exercise.category}`, false);
                    setOutput(res);
                 }}
                 className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded-md text-xs font-medium transition-colors"
@@ -398,7 +622,7 @@ export default function App() {
               <button 
                 onClick={async () => {
                   setOutput("✨ Starting performance audit...");
-                  const system = `Audit the user's Unity code specifically for mobile performance bottlenecks. Mention draw calls, memory allocation, and battery efficiency.`;
+                  const system = `Audit the user's code for performance on Garmin's target platforms (tile-based mobile GPUs on iOS/Android). Check for: overdraw, excessive draw calls, GC allocations per frame, inappropriate shader complexity, texture memory waste, and battery drain. Suggest profiling tools (Unity Profiler, Snapdragon Profiler, Xcode Metal System Trace). Rate severity as Critical/Warning/Info.`;
                   const result = await callGemini(system, code, false);
                   setOutput(result);
                 }}
