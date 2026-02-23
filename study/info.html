@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garmin Senior Technical Artist: Interview Intelligence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Roboto', sans-serif; }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 400px; }
+        }
+        .flow-node {
+            transition: all 0.3s ease;
+        }
+        .flow-node:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .term-card {
+            background: rgba(30, 41, 59, 0.5);
+            border-left: 2px solid #3b82f6;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+        .glow-text {
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+    <!-- 
+        Palette: Vibrant Tech
+        Background: Slate-900 (#0f172a)
+        Text: White / Slate-200
+        Primary: Blue-500 (#3b82f6)
+        Secondary: Emerald-500 (#10b981)
+        Accent: Violet-500 (#8b5cf6)
+        
+        Narrative Plan:
+        1. Role Deconstruction (Golf vs Aviation)
+        2. Skill Gap Analysis (Radar Chart)
+        3. Houdini Deep Dive (SOPs, TOPs, HDAs)
+        4. Tile-Based Rendering Deep Dive (TBR Glossary)
+        5. Optimization Strategies (Bar Chart)
+        6. Tech Stack (Doughnut)
+        
+        NO SVG used.
+        NO Mermaid JS used.
+    -->
+</head>
+<body class="bg-slate-900 text-slate-100 antialiased selection:bg-blue-500 selection:text-white">
+
+    <header class="bg-gradient-to-r from-blue-900 to-slate-900 border-b border-blue-800 sticky top-0 z-50 backdrop-blur-md bg-opacity-90">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-black tracking-tight text-white">GARMIN <span class="text-blue-400">STUDY GUIDE</span></h1>
+                <p class="text-sm text-blue-200 font-medium text-uppercase">Senior Tech Artist Prep • Cory Brown</p>
+            </div>
+            <div class="hidden md:block">
+                <span class="px-3 py-1 bg-emerald-500/20 text-emerald-300 rounded-full text-xs font-bold border border-emerald-500/50">CANDIDATE: CORY BROWN</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-8 space-y-16">
+
+        <!-- Senior Mindset Banner -->
+        <section class="bg-gradient-to-r from-violet-900/40 to-blue-900/40 rounded-2xl p-8 border border-violet-500/30">
+            <div class="flex flex-col lg:flex-row items-center gap-8">
+                <div class="flex-1">
+                    <h2 class="text-2xl font-bold text-white mb-4">🎯 The Senior Mindset</h2>
+                    <p class="text-slate-300 mb-4">A <b>Senior Technical Artist</b> isn't just someone with more years of experience—it's someone who thinks in <b>systems</b>, communicates across disciplines, and multiplies the productivity of everyone around them.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <span class="text-violet-400 font-bold">Systems Thinker</span>
+                            <p class="text-slate-400 text-xs mt-1">Design pipelines, not just assets. Think about scale from day one.</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <span class="text-blue-400 font-bold">Bridge Builder</span>
+                            <p class="text-slate-400 text-xs mt-1">Translate between art and engineering. Speak both languages fluently.</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <span class="text-emerald-400 font-bold">Force Multiplier</span>
+                            <p class="text-slate-400 text-xs mt-1">Your tools make other artists 10x more productive. Measure impact, not output.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-none text-center">
+                    <div class="w-32 h-32 rounded-full bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center text-6xl shadow-lg shadow-violet-500/20">
+                        👨‍💻
+                    </div>
+                    <p class="text-xs text-slate-400 mt-2">Think like a lead.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="max-w-4xl mx-auto text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">Proceduralism & Performance</h2>
+                <p class="text-lg text-slate-300 leading-relaxed">
+                    At Garmin, a Technical Artist is a force-multiplier. Whether you are automating the generation of 43,000 golf courses or squeezing 60fps out of a low-power aviation display, your focus is on <b>scale</b> and <b>efficiency</b>.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-slate-800 rounded-xl p-8 border-l-4 border-emerald-500 shadow-lg">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-2xl font-bold text-white">Golf Simulator</h3>
+                        <span class="text-3xl">⛳</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">Harnessing LiDAR and procedural engines to scale content across 40k+ maps.</p>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center"><span class="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span>Houdini PDG/TOPs Pipelines</li>
+                        <li class="flex items-center"><span class="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span>Custom HDA Unity Integration</li>
+                        <li class="flex items-center"><span class="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span>Automated Terrain LOD Generation</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800 rounded-xl p-8 border-l-4 border-blue-500 shadow-lg">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-2xl font-bold text-white">Embedded HMI</h3>
+                        <span class="text-3xl">✈️</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">Ensuring safety-critical UI renders perfectly on custom SOCs.</p>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center"><span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>Tile-Based Rendering (TBR) Mastery</li>
+                        <li class="flex items-center"><span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>HLSL Shader Optimization (Mobile)</li>
+                        <li class="flex items-center"><span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>Memory Bandwidth Management</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skill Analysis Radar -->
+        <section class="bg-slate-800 rounded-2xl p-8 shadow-xl border border-slate-700">
+            <h2 class="text-3xl font-bold text-white mb-4 border-b border-slate-700 pb-4">Alignment Analysis</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="chart-container">
+                    <canvas id="skillRadar"></canvas>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-blue-400 mb-4">Your Competitive Advantages</h3>
+                    <div class="space-y-6 text-sm text-slate-300">
+                        <div class="term-card" style="border-left-color: #3b82f6;">
+                            <span class="font-bold text-blue-400">🎯 TBR Expert:</span> "I've shipped on <b>Quest (Adreno)</b>—a TBR architecture. I understand tile flushes, HSR, and why MSAA is free if you resolve at pass end. This maps directly to Garmin's embedded GPUs."
+                        </div>
+                        <div class="term-card" style="border-left-color: #8b5cf6;">
+                            <span class="font-bold text-violet-400">✨ Shader Wizard:</span> "I've written <b>VAT playback shaders</b>, avatar skin/eye shaders, and raymarching effects. I think in ALU cycles and cache efficiency, not just visual output."
+                        </div>
+                        <div class="term-card" style="border-left-color: #f43f5e;">
+                            <span class="font-bold text-rose-400">⚡ C++ Systems:</span> "I write <b>native Unity plugins</b> and performance-critical code. I understand embedded constraints—no GC, no dynamic allocation in hot paths, deterministic performance."
+                        </div>
+                        <div class="term-card" style="border-left-color: #10b981;">
+                            <span class="font-bold text-emerald-400">🔧 Procedural Bridge:</span> "I've built <b>Houdini Python pipelines</b> for VATs and avatar clothing at Meta. I know how to make procedural systems that scale to 100k+ variations with automated QA."
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Study Cards: Core Competencies -->
+        <section class="space-y-8">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-white mb-2">📚 Study Cards: Sound Like a Senior</h2>
+                <p class="text-slate-400">Master these topics and talking points. Each card connects your experience to Garmin's needs.</p>
+            </div>
+
+            <!-- TBR Rendering Study Card -->
+            <div class="bg-gradient-to-br from-blue-900/40 to-slate-900 rounded-2xl p-8 border border-blue-500/30">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center text-2xl">🎯</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">Tile-Based Rendering (TBR)</h3>
+                        <p class="text-blue-400 text-sm">Your Strongest Area • Lead With This</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-slate-900/60 p-4 rounded-lg">
+                        <div class="text-blue-400 font-bold text-sm mb-2">🧠 Key Concepts</div>
+                        <ul class="text-xs text-slate-300 space-y-1">
+                            <li>• Geometry binning into screen-space tiles</li>
+                            <li>• On-chip SRAM vs. DRAM bandwidth</li>
+                            <li>• Hidden Surface Removal (HSR)</li>
+                            <li>• Tile flush cost and render pass design</li>
+                            <li>• PowerVR, Mali, Adreno architectures</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900/60 p-4 rounded-lg">
+                        <div class="text-emerald-400 font-bold text-sm mb-2">✅ Your Experience</div>
+                        <ul class="text-xs text-slate-300 space-y-1">
+                            <li>• Quest 2/3/Pro optimization (Qualcomm Adreno)</li>
+                            <li>• Ray Tracing on mobile AR glasses</li>
+                            <li>• Thermal throttling solutions</li>
+                            <li>• 72fps sustained on mobile VR</li>
+                            <li>• Wearable GPU constraints (watches)</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900/60 p-4 rounded-lg">
+                        <div class="text-amber-400 font-bold text-sm mb-2">💬 Say This</div>
+                        <p class="text-xs text-slate-300 italic">"I've shipped on Adreno, which is TBR. I know the cost of mid-frame tile flushes—it's why I always design render passes to resolve at the end. On Quest, a single render-to-texture mid-frame could drop us 10fps."</p>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-800/50 p-4 rounded-lg border-l-4 border-blue-500">
+                    <div class="text-white font-bold text-sm mb-2">🎤 Garmin-Specific Pivot</div>
+                    <p class="text-sm text-slate-300">"Garmin's aviation displays are likely PowerVR or similar TBR GPUs. I've optimized for exactly this architecture on Quest. The key insight is that MSAA is basically free on TBR if you resolve at render pass end, but render-to-texture is expensive. For an aviation HMI, I'd design a single-pass forward renderer with on-chip resolve—no intermediate buffers."</p>
+                </div>
+            </div>
+
+            <!-- Shaders Study Card -->
+            <div class="bg-gradient-to-br from-violet-900/40 to-slate-900 rounded-2xl p-8 border border-violet-500/30">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-violet-500/20 rounded-xl flex items-center justify-center text-2xl">✨</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">HLSL / Shader Optimization</h3>
+                        <p class="text-violet-400 text-sm">Expert Level • Deep Technical Knowledge</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-slate-900/60 p-4 rounded-lg">
+                        <div class="text-violet-400 font-bold text-sm mb-2">🧠 Key Concepts</div>
+                        <ul class="text-xs text-slate-300 space-y-1">
+                            <li>• ALU vs. texture fetch cost ratios</li>
+                            <li>• half vs. float precision tradeoffs</li>
+                            <li>• Constant buffer packing (16-byte align)</li>
+                            <li>• Branch divergence on SIMD</li>
+                            <li>• SDF rendering for UI/symbology</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900/60 p-4 rounded-lg">
+                        <div class="text-emerald-400 font-bold text-sm mb-2">✅ Your Experience</div>
+                        <ul class="text-xs text-slate-300 space-y-1">
+                            <li>• Custom shaders for Quest (URP/custom)</li>
+                            <li>• VAT playback shaders in vertex stage</li>
+                            <li>• Eye/skin shaders for avatars</li>
+                            <li>• Raymarching for AR effects</li>
+                            <li>• Cross-platform shader authoring</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900/60 p-4 rounded-lg">
+                        <div class="text-amber-400 font-bold text-sm mb-2">💬 Say This</div>
+                        <p class="text-xs text-slate-300 italic">"I always profile shader cost in ALU cycles, not just frame time. On mobile, a texture sample can cost 4x an ALU op, so I'll often compute procedurally what others would sample from a lookup texture."</p>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-800/50 p-4 rounded-lg border-l-4 border-violet-500">
+                    <div class="text-white font-bold text-sm mb-2">🎤 Garmin-Specific Pivot</div>
+                    <p class="text-sm text-slate-300">"For aviation symbology, I'd use SDF-based rendering. It gives you infinitely scalable vector graphics with a single texture sample. I've written SDF shaders that render crisp text and icons at any resolution—perfect for altitude tapes or heading indicators that need to be readable at a glance."</p>
+                </div>
+            </div>
+
+            <!-- C++ Study Card -->
+            <div class="bg-gradient-to-br from-rose-900/40 to-slate-900 rounded-2xl p-8 border border-rose-500/30">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-rose-500/20 rounded-xl flex items-center justify-center text-2xl">⚡</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">C++ / Systems Engineering</h3>
+                        <p class="text-rose-400 text-sm">Expert Level • Performance-Critical Code</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-slate-900/60 p-4 rounded-lg">
+                        <div class="text-rose-400 font-bold text-sm mb-2">🧠 Key Concepts</div>
+                        <ul class="text-xs text-slate-300 space-y-1">
+                            <li>• Memory layout and cache optimization</li>
+                            <li>• SIMD intrinsics (SSE/NEON)</li>
+                            <li>• Lock-free data structures</li>
+                            <li>• Custom allocators</li>
+                            <li>• Hot path optimization</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900/60 p-4 rounded-lg">
+                        <div class="text-emerald-400 font-bold text-sm mb-2">✅ Your Experience</div>
+                        <ul class="text-xs text-slate-300 space-y-1">
+                            <li>• <b>Python API for Horizon Engine</b></li>
+                            <li>• Native plugins (C++/C# bridge)</li>
+                            <li>• Performance-critical asset processing</li>
+                            <li>• Cross-platform builds</li>
+                            <li>• Mentored TAs in C++ fundamentals</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900/60 p-4 rounded-lg">
+                        <div class="text-amber-400 font-bold text-sm mb-2">💬 Say This</div>
+                        <p class="text-xs text-slate-300 italic">"I built the Python API layer for Meta's Horizon Engine—which required deep C++ integration. I also mentored TAs on C++ fundamentals so they could contribute to performance-critical code."</p>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-800/50 p-4 rounded-lg border-l-4 border-rose-500">
+                    <div class="text-white font-bold text-sm mb-2">🎤 Garmin-Specific Pivot</div>
+                    <p class="text-sm text-slate-300">"For embedded systems like aviation displays, C++ isn't optional—it's the language. I'm comfortable writing performance-critical code with hard real-time constraints. I understand that on embedded, you don't get the luxury of garbage collection or dynamic allocation in hot paths."</p>
+                </div>
+            </div>
+
+            <!-- Engine Optimization Study Card -->
+            <div class="bg-gradient-to-br from-cyan-900/40 to-slate-900 rounded-2xl p-8 border border-cyan-500/30">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center text-2xl">🎮</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">Engine Optimization (Horizon/Unreal/Unity)</h3>
+                        <p class="text-cyan-400 text-sm">Multi-Engine Expertise • Quest/Mobile Focus</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-slate-900/60 p-4 rounded-lg">
+                        <div class="text-cyan-400 font-bold text-sm mb-2">🧠 Key Concepts</div>
+                        <ul class="text-xs text-slate-300 space-y-1">
+                            <li>• Draw call batching & instancing</li>
+                            <li>• Asset streaming architectures</li>
+                            <li>• USD as interchange format</li>
+                            <li>• Custom render pipelines</li>
+                            <li>• Profiler deep dives (CPU/GPU)</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900/60 p-4 rounded-lg">
+                        <div class="text-emerald-400 font-bold text-sm mb-2">✅ Your Experience</div>
+                        <ul class="text-xs text-slate-300 space-y-1">
+                            <li>• <b>Horizon Engine</b> (Meta internal)</li>
+                            <li>• <b>Unreal Engine</b> optimization</li>
+                            <li>• <b>USD pipelines</b> for content data</li>
+                            <li>• Python asset pipeline automation</li>
+                            <li>• Quest 2/3/Pro shipping titles</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900/60 p-4 rounded-lg">
+                        <div class="text-amber-400 font-bold text-sm mb-2">💬 Say This</div>
+                        <p class="text-xs text-slate-300 italic">"At Meta I worked on both our internal Horizon Engine and Unreal. We built asset pipelines outputting USD as our main content format—it's industry-standard now for interchange. I understand engine architecture at a deep level, not just one engine's API."</p>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-800/50 p-4 rounded-lg border-l-4 border-cyan-500">
+                    <div class="text-white font-bold text-sm mb-2">🎤 Garmin-Specific Pivot</div>
+                    <p class="text-sm text-slate-300">"I'm engine-agnostic. Whether Garmin uses Unity, Unreal, or a custom engine, the optimization principles are the same: minimize state changes, batch aggressively, stream intelligently. My USD pipeline experience is directly relevant—USD is perfect for managing 43k golf courses as hierarchical scene descriptions."</p>
+                </div>
+            </div>
+
+            <!-- Houdini/Procedural Study Card -->
+            <div class="bg-gradient-to-br from-emerald-900/40 to-slate-900 rounded-2xl p-8 border border-emerald-500/30">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center text-2xl">🔧</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">Houdini / Procedural Generation</h3>
+                        <p class="text-emerald-400 text-sm">Production Experience • Deepening Expertise</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-slate-900/60 p-4 rounded-lg">
+                        <div class="text-emerald-400 font-bold text-sm mb-2">🧠 Key Concepts</div>
+                        <ul class="text-xs text-slate-300 space-y-1">
+                            <li>• SOPs for geometry processing</li>
+                            <li>• TOPs/PDG for batch automation</li>
+                            <li>• HDAs for engine integration</li>
+                            <li>• VEX vs Python in Houdini</li>
+                            <li>• USD export workflows</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900/60 p-4 rounded-lg">
+                        <div class="text-emerald-400 font-bold text-sm mb-2">✅ Your Experience</div>
+                        <ul class="text-xs text-slate-300 space-y-1">
+                            <li>• VAT pipelines (Orion/Shared Exp)</li>
+                            <li>• Avatar clothing generation</li>
+                            <li>• Self-slicing geometry for body types</li>
+                            <li>• <b>Python automation</b> (heavy use)</li>
+                            <li>• <b>USD asset pipelines</b> at Meta</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900/60 p-4 rounded-lg">
+                        <div class="text-amber-400 font-bold text-sm mb-2">💬 Say This</div>
+                        <p class="text-xs text-slate-300 italic">"I've used Houdini in production for VATs and procedural clothing. More importantly, I've built Python-driven asset pipelines that output USD—which is the direction the industry is moving. I approach Houdini as a programmer, not just an artist."</p>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-800/50 p-4 rounded-lg border-l-4 border-emerald-500">
+                    <div class="text-white font-bold text-sm mb-2">🎤 Garmin-Specific Pivot</div>
+                    <p class="text-sm text-slate-300">"My procedural experience solves the same problems Garmin faces: content that adapts to variable inputs at scale. Whether it's body types or terrain variations, the techniques are identical—SDF proximity, adaptive meshing, automated validation. My USD pipeline experience is directly applicable to managing 43k courses."</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Houdini Study Guide & Practice Tasks -->
+        <section class="bg-gradient-to-br from-orange-900/30 to-slate-900 rounded-2xl p-8 border border-orange-500/30">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center text-2xl">🎓</div>
+                <div>
+                    <h2 class="text-3xl font-bold text-white">Houdini Study Guide & Practice</h2>
+                    <p class="text-orange-400 text-sm">Hands-On Tasks to Build Confidence Before Wednesday</p>
+                </div>
+            </div>
+            
+            <p class="text-slate-300 mb-6">Your Python and procedural thinking are strong. These exercises will help you speak Houdini's language fluently and demonstrate hands-on familiarity.</p>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- Beginner Tasks -->
+                <div class="bg-slate-800/60 p-6 rounded-xl">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded">WARM-UP</span>
+                        <h3 class="text-lg font-bold text-white">Foundation Exercises (1-2 hrs)</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <div class="font-bold text-white text-sm mb-1">1. Build a Terrain from Noise</div>
+                            <p class="text-xs text-slate-400 mb-2">Create a grid, add Mountain SOP with noise, then use a Color SOP to visualize slope. This is the foundation of golf course terrain.</p>
+                            <div class="text-xs text-orange-400">📍 Nodes: Grid → Mountain → Color → Normal</div>
+                        </div>
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <div class="font-bold text-white text-sm mb-1">2. Scatter Objects with Attributes</div>
+                            <p class="text-xs text-slate-400 mb-2">Scatter points on terrain, use @slope attribute to control density (no trees on steep slopes). Copy spheres to points.</p>
+                            <div class="text-xs text-orange-400">📍 Nodes: Scatter → Attribute Wrangle → Copy to Points</div>
+                        </div>
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <div class="font-bold text-white text-sm mb-1">3. Python SOP Basics</div>
+                            <p class="text-xs text-slate-400 mb-2">Create a Python SOP that reads point positions and modifies them. This bridges your Python skills to Houdini.</p>
+                            <div class="text-xs text-orange-400">📍 Nodes: Python SOP with hou.Geometry() API</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Intermediate Tasks -->
+                <div class="bg-slate-800/60 p-6 rounded-xl">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="px-2 py-1 bg-amber-500/20 text-amber-400 text-xs font-bold rounded">CORE SKILLS</span>
+                        <h3 class="text-lg font-bold text-white">Golf-Relevant Exercises (2-3 hrs)</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <div class="font-bold text-white text-sm mb-1">4. Procedural Bunker</div>
+                            <p class="text-xs text-slate-400 mb-2">Draw a curve, use it to cut a hole in terrain, smooth the edges, apply sand material zone. Classic golf feature.</p>
+                            <div class="text-xs text-orange-400">📍 Nodes: Curve → Boolean → Smooth → Group</div>
+                        </div>
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <div class="font-bold text-white text-sm mb-1">5. LOD Chain Generation</div>
+                            <p class="text-xs text-slate-400 mb-2">Take a mesh, use PolyReduce to create 3 LOD levels, export each. Critical for Garmin's streaming needs.</p>
+                            <div class="text-xs text-orange-400">📍 Nodes: PolyReduce (3x) → Switch → ROP</div>
+                        </div>
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <div class="font-bold text-white text-sm mb-1">6. Simple VAT Export</div>
+                            <p class="text-xs text-slate-400 mb-2">Animate a flag waving (Vellum cloth), export position data to texture using Labs VAT ROP. Your specialty!</p>
+                            <div class="text-xs text-orange-400">📍 Nodes: Vellum → Labs Vertex Animation Textures</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Advanced Tasks -->
+                <div class="bg-slate-800/60 p-6 rounded-xl">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="px-2 py-1 bg-red-500/20 text-red-400 text-xs font-bold rounded">ADVANCED</span>
+                        <h3 class="text-lg font-bold text-white">Interview Impressive (3-4 hrs)</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <div class="font-bold text-white text-sm mb-1">7. Simple HDA</div>
+                            <p class="text-xs text-slate-400 mb-2">Wrap your bunker tool into an HDA with exposed parameters (depth, edge softness, sand color). This is what Garmin's artists would use.</p>
+                            <div class="text-xs text-orange-400">📍 Right-click subnet → Create Digital Asset</div>
+                        </div>
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <div class="font-bold text-white text-sm mb-1">8. PDG/TOPs Batch Processing</div>
+                            <p class="text-xs text-slate-400 mb-2">Create a TOP network that processes multiple terrain variations in parallel. This is how Garmin scales to 43k courses.</p>
+                            <div class="text-xs text-orange-400">📍 Nodes: File Pattern → HDA Processor → ROP Fetch</div>
+                        </div>
+                        <div class="bg-slate-900/50 p-3 rounded-lg">
+                            <div class="font-bold text-white text-sm mb-1">9. USD Export Pipeline</div>
+                            <p class="text-xs text-slate-400 mb-2">Export your terrain + scattered objects as a USD stage with proper hierarchy. Bridges your Meta USD experience.</p>
+                            <div class="text-xs text-orange-400">📍 Nodes: USD Configure → USD ROP → Python automation</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Key Vocabulary -->
+                <div class="bg-slate-800/60 p-6 rounded-xl">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs font-bold rounded">VOCABULARY</span>
+                        <h3 class="text-lg font-bold text-white">Terms to Use Confidently</h3>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 text-xs">
+                        <div class="bg-slate-900/50 p-2 rounded">
+                            <span class="text-emerald-400 font-bold">@ptnum</span>
+                            <p class="text-slate-400">Point index attribute</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-2 rounded">
+                            <span class="text-emerald-400 font-bold">@N</span>
+                            <p class="text-slate-400">Normal vector attribute</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-2 rounded">
+                            <span class="text-emerald-400 font-bold">@Cd</span>
+                            <p class="text-slate-400">Color (diffuse) attribute</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-2 rounded">
+                            <span class="text-emerald-400 font-bold">@pscale</span>
+                            <p class="text-slate-400">Point scale for instancing</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-2 rounded">
+                            <span class="text-emerald-400 font-bold">Wrangle</span>
+                            <p class="text-slate-400">VEX code node</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-2 rounded">
+                            <span class="text-emerald-400 font-bold">Subnet</span>
+                            <p class="text-slate-400">Node grouping container</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-2 rounded">
+                            <span class="text-emerald-400 font-bold">Work Item</span>
+                            <p class="text-slate-400">PDG task unit</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-2 rounded">
+                            <span class="text-emerald-400 font-bold">Cook</span>
+                            <p class="text-slate-400">Compute/evaluate</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Reference -->
+            <div class="bg-slate-900/60 p-6 rounded-lg border border-orange-500/20">
+                <h4 class="font-bold text-orange-400 mb-4">🚀 If You Only Have 1 Hour Before the Interview</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="text-sm">
+                        <div class="font-bold text-white mb-2">Watch (20 min)</div>
+                        <p class="text-xs text-slate-400">SideFX "Houdini Isn't Scary" series on YouTube. Covers node-based thinking for programmers.</p>
+                    </div>
+                    <div class="text-sm">
+                        <div class="font-bold text-white mb-2">Build (30 min)</div>
+                        <p class="text-xs text-slate-400">Task #1 + #2 above. Terrain + scatter gives you concrete experience to reference.</p>
+                    </div>
+                    <div class="text-sm">
+                        <div class="font-bold text-white mb-2">Memorize (10 min)</div>
+                        <p class="text-xs text-slate-400">The vocabulary terms. Being able to say "I'd use a wrangle to compute @slope" sounds credible.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-slate-800/50 p-4 rounded-lg border-l-4 border-orange-500 mt-6">
+                <div class="text-white font-bold text-sm mb-2">🎤 How to Frame Your Houdini Level Honestly</div>
+                <p class="text-sm text-slate-300">"I've used Houdini in production for VATs and procedural clothing, and I've built Python pipelines that integrate with it. I'm not a Houdini artist who lives in the tool daily, but I understand the node-based paradigm and can write the Python/VEX automation that makes procedural systems scale. My strength is bridging Houdini to engine pipelines—which is exactly what a Tech Artist does."</p>
+            </div>
+        </section>
+
+        <!-- Cory's Procedural Experience -->
+        <section class="bg-gradient-to-br from-emerald-900/30 to-slate-900 rounded-2xl p-8 border border-emerald-500/30">
+            <h2 class="text-3xl font-bold text-white mb-2">🎯 Your Procedural Experience (Use This!)</h2>
+            <p class="text-slate-400 text-sm mb-6">This is your strongest bridge to Garmin's golf pipeline. Lead with this in procedural discussions.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-slate-800/80 p-6 rounded-xl border-l-4 border-emerald-500">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="text-2xl">🎮</span>
+                        <div>
+                            <div class="font-bold text-white">Orion Games & Shared Experiences</div>
+                            <div class="text-xs text-emerald-400">Houdini + Python</div>
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate-300 mb-3">Built <b>Vertex Animation Texture (VAT)</b> pipelines for real-time character effects. VATs bake complex simulations into textures for GPU playback—exactly what Garmin needs for grass/foliage animation on mobile.</p>
+                    <div class="text-xs text-slate-500 bg-slate-900/50 p-2 rounded">💡 <i>"VATs let us ship Houdini-quality cloth sim on Quest hardware at 72fps."</i></div>
+                </div>
+                
+                <div class="bg-slate-800/80 p-6 rounded-xl border-l-4 border-blue-500">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="text-2xl">👤</span>
+                        <div>
+                            <div class="font-bold text-white">Avatar Team</div>
+                            <div class="text-xs text-blue-400">Houdini + Maya Tooling</div>
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate-300 mb-3">Created procedural <b>clothing generation</b> system with intelligent self-intersection handling. Geometry automatically slices and adapts to thousands of body type variations.</p>
+                    <div class="text-xs text-slate-500 bg-slate-900/50 p-2 rounded">💡 <i>"Similar to how Garmin might handle terrain variations across 43k courses."</i></div>
+                </div>
+                
+                <div class="bg-slate-800/80 p-6 rounded-xl border-l-4 border-violet-500">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="text-2xl">🔧</span>
+                        <div>
+                            <div class="font-bold text-white">Maya DCC Pipeline</div>
+                            <div class="text-xs text-violet-400">Python + CDN Integration</div>
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate-300 mb-3">Built Maya tooling for <b>skinning workflows</b> and <b>CDN asset import</b>—connecting cloud-hosted assets directly into artist DCCs with validation layers.</p>
+                    <div class="text-xs text-slate-500 bg-slate-900/50 p-2 rounded">💡 <i>"I've bridged cloud infrastructure with traditional DCC workflows before."</i></div>
+                </div>
+                
+                <div class="bg-slate-800/80 p-6 rounded-xl border-l-4 border-amber-500">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="text-2xl">🧪</span>
+                        <div>
+                            <div class="font-bold text-white">Automated Visual Regression</div>
+                            <div class="text-xs text-amber-400">QA at Scale</div>
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate-300 mb-3">Implemented <b>automated unit tests for visual regressions</b>—rendering procedural outputs and diffing against golden masters to catch issues before they ship.</p>
+                    <div class="text-xs text-slate-500 bg-slate-900/50 p-2 rounded">💡 <i>"This is critical for Garmin's 43k course pipeline—you can't QA that manually."</i></div>
+                </div>
+            </div>
+            
+            <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-700">
+                <h4 class="font-bold text-white mb-2">🗣️ How to Frame This in the Interview</h4>
+                <p class="text-sm text-slate-300">"At Meta, I worked on procedural systems at a scale similar to what Garmin faces. Our avatar clothing system had to handle thousands of body variations—just like your golf courses handle thousands of terrain variations. I built the Houdini Python tools, the Maya integration, and the automated visual regression testing that made it all work at scale."</p>
+            </div>
+        </section>
+
+        <!-- Self-Slicing Geometry Deep Dive -->
+        <section class="bg-slate-800 rounded-2xl p-8 border border-violet-500/20">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-3xl">✂️</span>
+                <div>
+                    <h2 class="text-3xl font-bold text-white">Procedural Self-Slicing Geometry</h2>
+                    <p class="text-violet-400 text-sm font-medium">Avatar Team Technique → Garmin Application</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-4">The Problem You Solved</h3>
+                    <p class="text-sm text-slate-300 mb-4">When clothing geometry is designed for one body type, it <b>intersects and clips</b> on different body shapes. Manual fixing for thousands of variations is impossible.</p>
+                    
+                    <div class="space-y-3">
+                        <div class="bg-slate-900/60 p-3 rounded-lg border-l-2 border-violet-500">
+                            <div class="text-violet-400 font-bold text-sm">Intersection Detection</div>
+                            <p class="text-xs text-slate-400">Identify where clothing mesh penetrates body mesh using ray casting or SDF proximity.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-3 rounded-lg border-l-2 border-violet-500">
+                            <div class="text-violet-400 font-bold text-sm">Sculpt Zones</div>
+                            <p class="text-xs text-slate-400">Define regions where geometry can deform (waist, hips, shoulders) vs. rigid areas (buttons, zippers).</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-3 rounded-lg border-l-2 border-violet-500">
+                            <div class="text-violet-400 font-bold text-sm">Adaptive Slicing</div>
+                            <p class="text-xs text-slate-400">Procedurally cut and re-mesh problem areas while maintaining UV continuity and material boundaries.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-3 rounded-lg border-l-2 border-violet-500">
+                            <div class="text-violet-400 font-bold text-sm">Body Type Interpolation</div>
+                            <p class="text-xs text-slate-400">Blend between pre-computed solutions for smooth results across the full body type spectrum.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-4">Garmin Golf Applications</h3>
+                    <p class="text-sm text-slate-300 mb-4">The same techniques apply to terrain/object intersections in procedural course generation:</p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex gap-3">
+                            <span class="text-2xl">🌲</span>
+                            <div>
+                                <div class="font-bold text-white text-sm">Tree/Terrain Intersection</div>
+                                <p class="text-xs text-slate-400">Trees placed on slopes need root systems that conform to terrain. Same SDF proximity logic.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <span class="text-2xl">🏠</span>
+                            <div>
+                                <div class="font-bold text-white text-sm">Building/Ground Contact</div>
+                                <p class="text-xs text-slate-400">Clubhouses, maintenance buildings need foundation geometry that adapts to terrain slope.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <span class="text-2xl">🛣️</span>
+                            <div>
+                                <div class="font-bold text-white text-sm">Cart Path Conforming</div>
+                                <p class="text-xs text-slate-400">Paths need to follow terrain while maintaining consistent width and banking on curves.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <span class="text-2xl">⛳</span>
+                            <div>
+                                <div class="font-bold text-white text-sm">Bunker Edge Blending</div>
+                                <p class="text-xs text-slate-400">Sand trap edges must blend seamlessly with surrounding terrain at any elevation.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-slate-900/60 p-4 rounded-lg border border-violet-500/30 mt-6">
+                <h4 class="font-bold text-violet-400 mb-2">🗣️ Interview Talking Point</h4>
+                <p class="text-sm text-slate-300">"The self-slicing geometry system I built for avatars solves the same fundamental problem Garmin faces: how do you make procedural content that adapts to variable base geometry? Whether it's clothing on different body types or trees on different terrain slopes, the math is the same—SDF proximity, adaptive meshing, and interpolation between known-good solutions."</p>
+            </div>
+        </section>
+
+        <!-- New: Houdini Procedural Deep Dive -->
+        <section class="space-y-8">
+            <h2 class="text-3xl font-bold text-white">Houdini: The Content Engine</h2>
+            <p class="text-slate-300 max-w-3xl">Garmin likely uses a <b>SOP-centric</b> workflow for geometry and a <b>TOP-centric</b> workflow for pipeline automation.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-slate-800/80 p-6 rounded-xl border border-emerald-500/30">
+                    <div class="text-emerald-400 font-black text-xl mb-2">SOPs</div>
+                    <p class="text-xs text-slate-400 uppercase font-bold tracking-widest mb-3">Surface Operators</p>
+                    <p class="text-sm text-slate-300">The core of geometry. Use for <b>LiDAR to Mesh</b> conversion, hole-filling, procedural fairway sculpting, and bunker placement logic.</p>
+                </div>
+                <div class="bg-slate-800/80 p-6 rounded-xl border border-emerald-500/30">
+                    <div class="text-emerald-400 font-black text-xl mb-2">TOPs / PDG</div>
+                    <p class="text-xs text-slate-400 uppercase font-bold tracking-widest mb-3">Task Operators</p>
+                    <p class="text-sm text-slate-300">The "brains." PDG (Procedural Dependency Graph) allows Garmin to run <b>Course Baking</b> as a massive parallel batch process across servers.</p>
+                </div>
+                <div class="bg-slate-800/80 p-6 rounded-xl border border-emerald-500/30">
+                    <div class="text-emerald-400 font-black text-xl mb-2">HDAs</div>
+                    <p class="text-xs text-slate-400 uppercase font-bold tracking-widest mb-3">Digital Assets</p>
+                    <p class="text-sm text-slate-300">The "container." Allows Unity artists to use Houdini's power directly in the engine via the <b>Houdini Engine Plugin</b>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- VAT Deep Dive - Cory's Experience -->
+        <section class="bg-slate-800 rounded-2xl p-8 border border-emerald-500/20">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-3xl">🎬</span>
+                <div>
+                    <h2 class="text-3xl font-bold text-white">Vertex Animation Textures (VATs)</h2>
+                    <p class="text-emerald-400 text-sm font-medium">Your Orion Games Experience → Garmin Application</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-4">What Are VATs?</h3>
+                    <p class="text-sm text-slate-300 mb-4">VATs bake complex Houdini simulations (cloth, destruction, fluid) into texture data that GPUs can replay in real-time with <b>zero CPU cost</b>. Perfect for mobile/embedded where CPU is precious.</p>
+                    
+                    <div class="space-y-3">
+                        <div class="bg-slate-900/60 p-3 rounded-lg">
+                            <div class="text-emerald-400 font-bold text-sm">Position Texture</div>
+                            <p class="text-xs text-slate-400">RGB = XYZ offset from rest pose. Each row = one frame. Vertex shader samples and applies.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-3 rounded-lg">
+                            <div class="text-emerald-400 font-bold text-sm">Normal Texture</div>
+                            <p class="text-xs text-slate-400">RGB = normal direction per frame. Critical for correct lighting on deforming geometry.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-3 rounded-lg">
+                            <div class="text-emerald-400 font-bold text-sm">Lookup UV</div>
+                            <p class="text-xs text-slate-400">Second UV channel maps vertex index to texture row. Time uniform controls frame selection.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-4">Garmin Applications</h3>
+                    <div class="space-y-4">
+                        <div class="flex gap-3">
+                            <span class="text-2xl">⛳</span>
+                            <div>
+                                <div class="font-bold text-white text-sm">Grass/Foliage Animation</div>
+                                <p class="text-xs text-slate-400">Wind-driven grass movement baked as VAT. One texture drives thousands of blades. Huge win for golf course rendering.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <span class="text-2xl">🌊</span>
+                            <div>
+                                <div class="font-bold text-white text-sm">Water Caustics/Ripples</div>
+                                <p class="text-xs text-slate-400">Pre-baked water surface animation for hazards. Looks complex, costs almost nothing.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <span class="text-2xl">🌳</span>
+                            <div>
+                                <div class="font-bold text-white text-sm">Tree Sway</div>
+                                <p class="text-xs text-slate-400">Realistic branch/leaf movement without skeletal animation overhead.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <span class="text-2xl">🏆</span>
+                            <div>
+                                <div class="font-bold text-white text-sm">Celebration Effects</div>
+                                <p class="text-xs text-slate-400">Confetti, flag waving, crowd reactions—all VAT candidates.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-slate-900/60 p-4 rounded-lg border border-emerald-500/30">
+                <h4 class="font-bold text-emerald-400 mb-2">🗣️ Interview Talking Point</h4>
+                <p class="text-sm text-slate-300">"At Meta, I built the VAT pipeline for Orion Games that let us ship Houdini-quality cloth simulation on Quest at 72fps. The same technique could dramatically improve Garmin's golf course rendering—imagine wind-driven grass across 43,000 courses with zero CPU overhead. I'd love to bring that expertise here."</p>
+            </div>
+        </section>
+
+        <!-- Enhanced: TBR Deep Dive -->
+        <section>
+            <h2 class="text-3xl font-bold text-white mb-6">Mastering Tile-Based Rendering (TBR)</h2>
+            <div class="bg-slate-800 p-8 rounded-2xl border border-blue-500/20 mb-8">
+                <h3 class="text-xl font-bold text-blue-400 mb-6">TBR Interview Glossary</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div class="term-card">
+                            <span class="font-bold text-white block">Binning Pass (Geometry)</span>
+                            <p class="text-xs text-slate-300">The GPU collects all geometry for the frame and sorts it into screen-space tiles (e.g. 32x32px).</p>
+                        </div>
+                        <div class="term-card">
+                            <span class="font-bold text-white block">On-Chip Memory (SRAM)</span>
+                            <p class="text-xs text-slate-300">TBR's superpower. Color, depth, and stencil are stored in fast local memory, avoiding expensive battery-draining DRAM access.</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="term-card">
+                            <span class="font-bold text-white block">Hidden Surface Removal (HSR)</span>
+                            <p class="text-xs text-slate-300">Unlike desktop GPUs that Z-test during shading, TBR GPUs (like PowerVR) can discard occluded pixels <i>before</i> fragment shading begins.</p>
+                        </div>
+                        <div class="term-card">
+                            <span class="font-bold text-white block">Tile Flush / Memory Bandwidth</span>
+                            <p class="text-xs text-slate-300">The goal is to NEVER flush a tile back to memory mid-frame. This is why "Render-to-Texture" is expensive on mobile.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="chart-container">
+                    <canvas id="tbrChart"></canvas>
+                </div>
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-white">Mobile Shader Optimization</h3>
+                    <ul class="space-y-4">
+                        <li class="flex gap-4">
+                            <div class="flex-none w-10 h-10 bg-blue-500/20 text-blue-400 rounded-lg flex items-center justify-center font-bold">1</div>
+                            <p class="text-sm text-slate-400"><b class="text-slate-100">Avoid Alpha Test:</b> On many TBR GPUs, `discard` instructions kill the ability to use HSR/Z-Prepass optimizations. Use Alpha Blending where possible, or keep Alpha Test minimal.</p>
+                        </li>
+                        <li class="flex gap-4">
+                            <div class="flex-none w-10 h-10 bg-emerald-500/20 text-emerald-400 rounded-lg flex items-center justify-center font-bold">2</div>
+                            <p class="text-sm text-slate-400"><b class="text-slate-100">Lower Precision:</b> Use `half` for colors and normals; only use `float` for texture coordinates or high-precision math to save register space.</p>
+                        </li>
+                        <li class="flex gap-4">
+                            <div class="flex-none w-10 h-10 bg-violet-500/20 text-violet-400 rounded-lg flex items-center justify-center font-bold">3</div>
+                            <p class="text-sm text-slate-400"><b class="text-slate-100">Minimize Branching:</b> Dynamic branches kill GPU parallelism. Use `lerp()` or `step()` instead of `if` statements where possible.</p>
+                        </li>
+                        <li class="flex gap-4">
+                            <div class="flex-none w-10 h-10 bg-amber-500/20 text-amber-400 rounded-lg flex items-center justify-center font-bold">4</div>
+                            <p class="text-sm text-slate-400"><b class="text-slate-100">Batch State Changes:</b> Sort draw calls by material/shader. Every state change stalls the pipeline on embedded GPUs.</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tech Stack -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div>
+                <h2 class="text-3xl font-bold text-white mb-6">Tech Stack Breakdown</h2>
+                <div class="chart-container">
+                    <canvas id="techStackChart"></canvas>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                    <h4 class="font-bold text-white mb-4">Interview Key Topics</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-3 bg-slate-900 rounded text-xs"><b>Unity URP:</b> SRP Batcher & Scriptable Shaders</div>
+                        <div class="p-3 bg-slate-900 rounded text-xs"><b>Data:</b> Parsing GeoJSON/LiDAR into Mesh</div>
+                        <div class="p-3 bg-slate-900 rounded text-xs"><b>Performance:</b> Xcode Instruments & RenderDoc</div>
+                        <div class="p-3 bg-slate-900 rounded text-xs"><b>Automation:</b> Python wrapper for Perforce/Git</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: Senior-Level Pipeline Architecture -->
+        <section class="space-y-8">
+            <h2 class="text-3xl font-bold text-white border-b border-slate-700 pb-4">Pipeline Architecture: A Senior Perspective</h2>
+            <p class="text-slate-300 max-w-4xl">At the senior level, you're not just using tools—you're <b>designing the system</b> that other artists depend on. Here's how to frame your pipeline experience.</p>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="flow-node bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-xl border border-violet-500/40">
+                    <div class="text-violet-400 font-black text-lg mb-2">🔄 Data Ingestion Layer</div>
+                    <p class="text-xs text-slate-400 uppercase font-bold tracking-widest mb-3">Source → Normalized Format</p>
+                    <ul class="text-sm text-slate-300 space-y-2">
+                        <li>• LiDAR (.las/.laz) → Point Cloud</li>
+                        <li>• GeoJSON → Feature Vectors</li>
+                        <li>• Satellite Imagery → Terrain Textures</li>
+                        <li>• Course Metadata → JSON Schema</li>
+                    </ul>
+                    <div class="mt-4 p-3 bg-slate-900/60 rounded text-xs text-violet-300">
+                        <b>Senior Talk:</b> "I'd implement a validation layer here with schema contracts to catch bad data before it enters the pipeline."
+                    </div>
+                </div>
+                
+                <div class="flow-node bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-xl border border-emerald-500/40">
+                    <div class="text-emerald-400 font-black text-lg mb-2">⚙️ Processing Layer</div>
+                    <p class="text-xs text-slate-400 uppercase font-bold tracking-widest mb-3">Houdini PDG Farm</p>
+                    <ul class="text-sm text-slate-300 space-y-2">
+                        <li>• Mesh Generation & Decimation</li>
+                        <li>• LOD Chain Generation</li>
+                        <li>• UV Unwrapping & Atlasing</li>
+                        <li>• Texture Baking (AO, Curvature)</li>
+                    </ul>
+                    <div class="mt-4 p-3 bg-slate-900/60 rounded text-xs text-emerald-300">
+                        <b>Senior Talk:</b> "PDG lets us scale horizontally. Each course is an independent work item—perfect for cloud compute bursting."
+                    </div>
+                </div>
+                
+                <div class="flow-node bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-xl border border-blue-500/40">
+                    <div class="text-blue-400 font-black text-lg mb-2">📦 Output Layer</div>
+                    <p class="text-xs text-slate-400 uppercase font-bold tracking-widest mb-3">Engine-Ready Assets</p>
+                    <ul class="text-sm text-slate-300 space-y-2">
+                        <li>• Unity AssetBundles</li>
+                        <li>• Compressed Textures (ASTC/ETC2)</li>
+                        <li>• Streaming Manifests</li>
+                        <li>• QA Validation Reports</li>
+                    </ul>
+                    <div class="mt-4 p-3 bg-slate-900/60 rounded text-xs text-blue-300">
+                        <b>Senior Talk:</b> "I'd add automated visual regression testing—render each hole and diff against a golden master."
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: Advanced Shader Techniques -->
+        <section class="bg-slate-800 rounded-2xl p-8 shadow-xl border border-slate-700">
+            <h2 class="text-3xl font-bold text-white mb-6 border-b border-slate-700 pb-4">Advanced Shader Techniques for Embedded</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="space-y-6">
+                    <h3 class="text-xl font-bold text-amber-400">🔥 Performance-Critical Patterns</h3>
+                    
+                    <div class="bg-slate-900/60 p-4 rounded-lg border-l-2 border-amber-500">
+                        <div class="font-bold text-white mb-2">Texture Atlasing Strategy</div>
+                        <p class="text-sm text-slate-400">On embedded GPUs, texture switches are <b>catastrophic</b>. Combine all UI elements into a single 2048x2048 atlas. Use a channel-packed approach: RGB for albedo, A for signed distance fields.</p>
+                    </div>
+                    
+                    <div class="bg-slate-900/60 p-4 rounded-lg border-l-2 border-amber-500">
+                        <div class="font-bold text-white mb-2">Signed Distance Field (SDF) Rendering</div>
+                        <p class="text-sm text-slate-400">Perfect for aviation symbology. SDFs scale infinitely without aliasing and require only a single texture sample. Ideal for altitude tapes, heading indicators, and flight path markers.</p>
+                    </div>
+                    
+                    <div class="bg-slate-900/60 p-4 rounded-lg border-l-2 border-amber-500">
+                        <div class="font-bold text-white mb-2">Constant Buffer Packing</div>
+                        <p class="text-sm text-slate-400">Align your cbuffer to 16-byte boundaries. Pack `float3 + float` together. Never waste a register—on mobile, you have precious few.</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-6">
+                    <h3 class="text-xl font-bold text-cyan-400">❄️ Memory Bandwidth Savers</h3>
+                    
+                    <div class="bg-slate-900/60 p-4 rounded-lg border-l-2 border-cyan-500">
+                        <div class="font-bold text-white mb-2">Framebuffer Fetch (FBF)</div>
+                        <p class="text-sm text-slate-400">On TBR GPUs, you can read the current pixel value <b>for free</b> using `gl_LastFragData` (GLES) or `[[color(0)]]` (Metal). Use this for blending operations instead of separate render passes.</p>
+                    </div>
+                    
+                    <div class="bg-slate-900/60 p-4 rounded-lg border-l-2 border-cyan-500">
+                        <div class="font-bold text-white mb-2">Subpass Dependencies (Vulkan)</div>
+                        <p class="text-sm text-slate-400">Group dependent render operations into a single render pass with subpasses. The driver can keep intermediate results in tile memory, avoiding costly DRAM writes.</p>
+                    </div>
+                    
+                    <div class="bg-slate-900/60 p-4 rounded-lg border-l-2 border-cyan-500">
+                        <div class="font-bold text-white mb-2">MSAA Resolve Strategy</div>
+                        <p class="text-sm text-slate-400">On TBR, MSAA is nearly free if you resolve at the end of the render pass (on-chip). Never resolve mid-frame. For aviation displays, 4x MSAA is often sufficient.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: Golf Simulator Deep Dive -->
+        <section class="space-y-8">
+            <h2 class="text-3xl font-bold text-white">Golf Simulator: Technical Deep Dive</h2>
+            <p class="text-slate-300 max-w-4xl">The Approach R10 and simulator products represent one of the most ambitious <b>procedural content pipelines</b> in consumer gaming. Here's how to speak intelligently about it.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold text-emerald-400 mb-4">📊 LiDAR Processing Pipeline</h3>
+                    <div class="space-y-4 text-sm">
+                        <div class="flex items-start gap-3">
+                            <span class="flex-none w-8 h-8 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center text-xs font-bold">1</span>
+                            <div>
+                                <b class="text-white">Point Cloud Classification</b>
+                                <p class="text-slate-400">Separate ground, vegetation, water, and structures using ML classifiers or geometric heuristics.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="flex-none w-8 h-8 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center text-xs font-bold">2</span>
+                            <div>
+                                <b class="text-white">Terrain Mesh Generation</b>
+                                <p class="text-slate-400">Delaunay triangulation with adaptive density. More triangles near greens, fewer in rough areas.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="flex-none w-8 h-8 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center text-xs font-bold">3</span>
+                            <div>
+                                <b class="text-white">Feature Extraction</b>
+                                <p class="text-slate-400">Auto-detect bunkers (curvature analysis), water hazards (flat + low elevation), and cart paths.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="flex-none w-8 h-8 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center text-xs font-bold">4</span>
+                            <div>
+                                <b class="text-white">LOD Chain Generation</b>
+                                <p class="text-slate-400">Generate 4-5 LOD levels with seamless transitions. Use screen-space error metrics for LOD selection.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold text-blue-400 mb-4">🎮 Unity Integration Strategy</h3>
+                    <div class="space-y-4 text-sm">
+                        <div class="flex items-start gap-3">
+                            <span class="flex-none w-8 h-8 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center text-xs font-bold">A</span>
+                            <div>
+                                <b class="text-white">Streaming Architecture</b>
+                                <p class="text-slate-400">Courses are too large for RAM. Implement tile-based streaming with predictive loading based on ball trajectory.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="flex-none w-8 h-8 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center text-xs font-bold">B</span>
+                            <div>
+                                <b class="text-white">Grass Rendering</b>
+                                <p class="text-slate-400">GPU instancing with indirect draw calls. Use a noise-based density map—no grass in bunkers or water.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="flex-none w-8 h-8 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center text-xs font-bold">C</span>
+                            <div>
+                                <b class="text-white">Physics Surface Types</b>
+                                <p class="text-slate-400">Encode surface type in vertex colors. Green = fast, Rough = slow, Sand = deceleration curves.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="flex-none w-8 h-8 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center text-xs font-bold">D</span>
+                            <div>
+                                <b class="text-white">Addressables + CDN</b>
+                                <p class="text-slate-400">Unity Addressables system for on-demand course downloads. Cache locally, update incrementally.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: Behavioral Interview Framework -->
+        <section class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-8 border border-slate-700">
+            <h2 class="text-3xl font-bold text-white mb-6">Senior-Level Behavioral Framework</h2>
+            <p class="text-slate-300 mb-8">At the senior level, expect questions about leadership, cross-functional collaboration, and technical decision-making. Use the <b>STAR method</b> with technical depth.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-slate-900/50 p-6 rounded-xl border border-violet-500/30">
+                    <div class="text-violet-400 font-bold text-lg mb-3">"Tell me about a time you built a system at scale."</div>
+                    <div class="space-y-3 text-sm text-slate-300">
+                        <p><b class="text-white">S:</b> Avatar team needed clothing that adapts to thousands of body type variations without manual adjustments.</p>
+                        <p><b class="text-white">T:</b> Build procedural system that auto-handles geometry intersections and scales across the entire avatar population.</p>
+                        <p><b class="text-white">A:</b> Built Houdini tools with self-slicing geometry logic. Created Maya tooling for skinning and CDN asset import. Implemented automated visual regression tests.</p>
+                        <p><b class="text-white">R:</b> System handles 100k+ body variations. Visual regression catches issues before they reach QA. Reduced manual clothing adjustment time by 90%.</p>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-900/50 p-6 rounded-xl border border-emerald-500/30">
+                    <div class="text-emerald-400 font-bold text-lg mb-3">"How do you approach complex procedural problems?"</div>
+                    <div class="space-y-3 text-sm text-slate-300">
+                        <p><b class="text-white">S:</b> Orion team needed real-time cloth/effects on Quest hardware—impossible with traditional simulation.</p>
+                        <p><b class="text-white">T:</b> Find a way to ship Houdini-quality simulation on mobile VR at 72fps.</p>
+                        <p><b class="text-white">A:</b> Built Python/Houdini pipeline for Vertex Animation Textures (VATs). Baked simulation to textures, replayed on GPU. Built USD export pipeline for content interchange.</p>
+                        <p><b class="text-white">R:</b> Shipped complex effects on Quest. Became team standard. USD pipeline now used across multiple teams at Meta.</p>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-900/50 p-6 rounded-xl border border-blue-500/30">
+                    <div class="text-blue-400 font-bold text-lg mb-3">"Describe a time you bridged art and engineering."</div>
+                    <div class="space-y-3 text-sm text-slate-300">
+                        <p><b class="text-white">S:</b> Artists on Horizon Engine and Unreal projects couldn't share assets easily; no common format.</p>
+                        <p><b class="text-white">T:</b> Create asset pipeline that works across engines without requiring artists to understand backend complexity.</p>
+                        <p><b class="text-white">A:</b> Built Python pipelines outputting <b>USD</b> as our main content data format. Created DCC tools for Maya with automatic validation and CDN integration.</p>
+                        <p><b class="text-white">R:</b> USD became our standard interchange format. Artists went from 2-hour manual process to 5-minute automated workflow.</p>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-900/50 p-6 rounded-xl border border-amber-500/30">
+                    <div class="text-amber-400 font-bold text-lg mb-3">"How do you ensure quality at scale?"</div>
+                    <div class="space-y-3 text-sm text-slate-300">
+                        <p><b class="text-white">S:</b> Procedural avatar clothing generated thousands of variations—impossible to QA manually.</p>
+                        <p><b class="text-white">T:</b> Catch visual regressions automatically before they ship to users.</p>
+                        <p><b class="text-white">A:</b> Implemented automated visual regression testing. Rendered procedural outputs, diffed against golden masters, flagged deviations above threshold.</p>
+                        <p><b class="text-white">R:</b> Caught 3 critical intersection bugs before launch. QA time reduced from days to hours. This exact approach would work for Garmin's 43k courses.</p>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-900/50 p-6 rounded-xl border border-cyan-500/30">
+                    <div class="text-cyan-400 font-bold text-lg mb-3">"Tell me about your mentoring experience."</div>
+                    <div class="space-y-3 text-sm text-slate-300">
+                        <p><b class="text-white">S:</b> Technical Artists across multiple Meta teams needed to level up in shaders, Python, TypeScript, and C++ to be effective with our tooling.</p>
+                        <p><b class="text-white">T:</b> Enable TAs to be self-sufficient with our Python APIs for Horizon Engine and Unreal tooling without creating bottlenecks on me.</p>
+                        <p><b class="text-white">A:</b> Created internal training materials, ran shader workshops, paired on Python/TypeScript projects. Built well-documented APIs that TAs could extend themselves.</p>
+                        <p><b class="text-white">R:</b> TAs I mentored became multipliers themselves—several now lead their own tool initiatives. The APIs I built are still used across teams.</p>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-900/50 p-6 rounded-xl border border-pink-500/30">
+                    <div class="text-pink-400 font-bold text-lg mb-3">"Describe building an API or framework others depend on."</div>
+                    <div class="space-y-3 text-sm text-slate-300">
+                        <p><b class="text-white">S:</b> Teams using Horizon Engine and Unreal needed consistent Python APIs for asset pipelines, but each team was building their own solutions.</p>
+                        <p><b class="text-white">T:</b> Design and implement unified Python APIs that work across both engines while being easy for TAs to use and extend.</p>
+                        <p><b class="text-white">A:</b> Built Python API layer for Horizon Engine and parallel tooling for Unreal. Focused on discoverability, documentation, and error handling. Ran workshops to train TAs.</p>
+                        <p><b class="text-white">R:</b> APIs became the standard across multiple teams. Reduced duplicate tooling efforts by ~60%. TAs could ship features without deep engine knowledge.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mentoring & Leadership Section -->
+        <section class="bg-gradient-to-br from-pink-900/30 to-slate-900 rounded-2xl p-8 border border-pink-500/30">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 bg-pink-500/20 rounded-xl flex items-center justify-center text-2xl">👨‍🏫</div>
+                <div>
+                    <h2 class="text-3xl font-bold text-white">Mentoring & Technical Leadership</h2>
+                    <p class="text-pink-400 text-sm">A Senior Differentiator • Force Multiplier Evidence</p>
+                </div>
+            </div>
+            
+            <p class="text-slate-300 mb-6">At the senior level, your impact isn't just what you build—it's <b>who you enable</b>. This is a key differentiator from mid-level candidates.</p>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="bg-slate-800/60 p-6 rounded-xl">
+                    <h3 class="text-lg font-bold text-white mb-4">🎓 What You Taught at Meta</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 p-3 bg-slate-900/50 rounded-lg">
+                            <span class="text-2xl">✨</span>
+                            <div>
+                                <div class="font-bold text-white text-sm">Shader Development</div>
+                                <p class="text-xs text-slate-400">Mentored TAs on HLSL/GLSL, mobile optimization, VAT playback shaders, and avatar rendering techniques.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-slate-900/50 rounded-lg">
+                            <span class="text-2xl">🐍</span>
+                            <div>
+                                <div class="font-bold text-white text-sm">Python for Pipelines</div>
+                                <p class="text-xs text-slate-400">Built Python APIs for Horizon Engine and Unreal. Trained TAs to extend and use them for asset automation.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-slate-900/50 rounded-lg">
+                            <span class="text-2xl">📘</span>
+                            <div>
+                                <div class="font-bold text-white text-sm">TypeScript Tooling</div>
+                                <p class="text-xs text-slate-400">Mentored TAs on TypeScript for internal web-based tools and editor extensions.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-slate-900/50 rounded-lg">
+                            <span class="text-2xl">⚡</span>
+                            <div>
+                                <div class="font-bold text-white text-sm">C++ Fundamentals</div>
+                                <p class="text-xs text-slate-400">Helped TAs understand native plugin development and performance-critical code patterns.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-800/60 p-6 rounded-xl">
+                    <h3 class="text-lg font-bold text-white mb-4">🔧 APIs & Frameworks You Built</h3>
+                    <div class="space-y-3">
+                        <div class="bg-slate-900/50 p-4 rounded-lg border-l-4 border-cyan-500">
+                            <div class="font-bold text-cyan-400 text-sm">Horizon Engine Python API</div>
+                            <p class="text-xs text-slate-300 mt-1">Designed Python bindings for Meta's internal Horizon Engine. Enabled TAs to automate asset processing, validation, and export without touching C++.</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-4 rounded-lg border-l-4 border-violet-500">
+                            <div class="font-bold text-violet-400 text-sm">Unreal Engine Tooling</div>
+                            <p class="text-xs text-slate-300 mt-1">Built Python tooling layer for Unreal projects. Unified workflows between Horizon and Unreal teams using USD as interchange.</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-4 rounded-lg border-l-4 border-emerald-500">
+                            <div class="font-bold text-emerald-400 text-sm">USD Asset Pipelines</div>
+                            <p class="text-xs text-slate-300 mt-1">Python-driven USD export pipelines that became the standard content format across multiple teams.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-slate-800/50 p-4 rounded-lg border-l-4 border-pink-500">
+                <div class="text-white font-bold text-sm mb-2">🎤 How to Frame This for Garmin</div>
+                <p class="text-sm text-slate-300">"At Meta, I wasn't just building tools—I was building the <b>people</b> who use them. I mentored Technical Artists in shaders, Python, TypeScript, and C++. I designed the Python APIs for our Horizon Engine and Unreal tooling that TAs across multiple teams still use today. That's the kind of force-multiplier impact I'd bring to Garmin—not just shipping features, but raising the capabilities of the entire team."</p>
+            </div>
+        </section>
+
+        <!-- NEW: Technical Questions Bank -->
+        <section class="space-y-8">
+            <h2 class="text-3xl font-bold text-white border-b border-slate-700 pb-4">Technical Question Bank</h2>
+            <p class="text-slate-300">Expect these types of questions. Practice explaining complex concepts simply—that's a senior skill. <b>Click each question to reveal the answer.</b></p>
+            
+            <!-- Graphics & Rendering Questions -->
+            <div class="bg-slate-800 p-6 rounded-xl">
+                <h3 class="text-lg font-bold text-blue-400 mb-4">Graphics & Rendering</h3>
+                <div class="space-y-4">
+                    <details class="group">
+                        <summary class="cursor-pointer border-l-2 border-blue-500/50 pl-3 text-sm text-slate-300 hover:text-white transition-colors">"Explain the difference between forward and deferred rendering. Which would you use for an aviation HMI?"</summary>
+                        <div class="mt-3 ml-5 p-4 bg-slate-900/60 rounded-lg text-sm">
+                            <p class="text-emerald-400 font-bold mb-2">✅ Answer:</p>
+                            <p class="text-slate-300 mb-3"><b>Forward rendering</b> processes each object through the full pipeline (vertex → fragment → output) immediately. <b>Deferred rendering</b> first renders geometry data to G-buffers (position, normal, albedo), then applies lighting in a separate pass.</p>
+                            <p class="text-slate-300 mb-3"><b>For aviation HMI: Forward rendering.</b> Here's why:</p>
+                            <ul class="text-slate-400 text-xs space-y-1 mb-3">
+                                <li>• <b>Lower memory bandwidth</b> — No G-buffer writes/reads, critical on embedded TBR GPUs</li>
+                                <li>• <b>MSAA-friendly</b> — Deferred struggles with MSAA; forward gets it nearly free on TBR</li>
+                                <li>• <b>Transparency support</b> — HMI has lots of alpha-blended elements; deferred requires separate forward pass anyway</li>
+                                <li>• <b>Simpler debugging</b> — Aviation software needs to be auditable and certifiable</li>
+                            </ul>
+                            <p class="text-amber-400 text-xs italic">"I'd use forward rendering for an aviation HMI. The display is mostly UI with limited dynamic lights, so deferred's benefits don't apply. Forward is simpler, uses less bandwidth, and MSAA works natively on TBR GPUs."</p>
+                        </div>
+                    </details>
+                    
+                    <details class="group">
+                        <summary class="cursor-pointer border-l-2 border-blue-500/50 pl-3 text-sm text-slate-300 hover:text-white transition-colors">"What causes aliasing in SDFs and how do you fix it?"</summary>
+                        <div class="mt-3 ml-5 p-4 bg-slate-900/60 rounded-lg text-sm">
+                            <p class="text-emerald-400 font-bold mb-2">✅ Answer:</p>
+                            <p class="text-slate-300 mb-3">SDF aliasing occurs when the <b>distance field gradient changes faster than pixel sampling rate</b>. At sharp edges or small features, the SDF value jumps abruptly between pixels, causing jagged edges.</p>
+                            <p class="text-slate-300 mb-3"><b>Fixes:</b></p>
+                            <ul class="text-slate-400 text-xs space-y-1 mb-3">
+                                <li>• <b>Smoothstep anti-aliasing</b> — Use <code class="bg-slate-800 px-1 rounded">smoothstep()</code> based on screen-space derivatives: <code class="bg-slate-800 px-1 rounded">smoothstep(-fw, fw, dist)</code> where <code class="bg-slate-800 px-1 rounded">fw = fwidth(dist)</code></li>
+                                <li>• <b>Multi-channel SDFs (MSDF)</b> — Store separate distance fields for edges in RGB channels; reconstruct sharp corners</li>
+                                <li>• <b>Supersampling</b> — Sample multiple points within the pixel and average (expensive but high quality)</li>
+                                <li>• <b>Proper mip-mapping</b> — Generate SDF mips correctly (not just box filter)</li>
+                            </ul>
+                            <p class="text-amber-400 text-xs italic">"I use screen-space derivatives with smoothstep for real-time AA. The key insight is that fwidth() tells you how fast the SDF is changing—you soften the edge proportionally. For text and icons, MSDF gives you sharp corners at any scale."</p>
+                        </div>
+                    </details>
+                    
+                    <details class="group">
+                        <summary class="cursor-pointer border-l-2 border-blue-500/50 pl-3 text-sm text-slate-300 hover:text-white transition-colors">"How would you implement efficient anti-aliasing on a TBR GPU?"</summary>
+                        <div class="mt-3 ml-5 p-4 bg-slate-900/60 rounded-lg text-sm">
+                            <p class="text-emerald-400 font-bold mb-2">✅ Answer:</p>
+                            <p class="text-slate-300 mb-3">On TBR GPUs, <b>MSAA is nearly free</b> if done correctly. The key is keeping samples in on-chip tile memory and resolving at the end of the render pass.</p>
+                            <p class="text-slate-300 mb-3"><b>Best approach:</b></p>
+                            <ul class="text-slate-400 text-xs space-y-1 mb-3">
+                                <li>• <b>Use MSAA 4x</b> — Sweet spot for quality vs. cost; samples stay in SRAM</li>
+                                <li>• <b>Resolve at pass end</b> — Never resolve mid-frame or you pay full bandwidth cost</li>
+                                <li>• <b>Avoid MSAA + transparency</b> — Alpha-tested geometry kills HSR; use alpha-to-coverage or separate pass</li>
+                                <li>• <b>Don't use post-process AA (FXAA/TAA)</b> — These require reading back the framebuffer, expensive on TBR</li>
+                            </ul>
+                            <p class="text-slate-300 mb-3"><b>Why MSAA is cheap on TBR:</b> Samples never leave the tile. On desktop (IMR), MSAA multiplies framebuffer bandwidth. On TBR, the tile holds all samples in fast SRAM until final resolve.</p>
+                            <p class="text-amber-400 text-xs italic">"On TBR, I always reach for MSAA first. 4x samples fit in tile memory, and resolve happens once at pass end. It's essentially free compared to post-process AA which would require reading back the whole framebuffer."</p>
+                        </div>
+                    </details>
+                    
+                    <details class="group">
+                        <summary class="cursor-pointer border-l-2 border-blue-500/50 pl-3 text-sm text-slate-300 hover:text-white transition-colors">"What's the cost of a texture sample vs. an ALU operation on mobile?"</summary>
+                        <div class="mt-3 ml-5 p-4 bg-slate-900/60 rounded-lg text-sm">
+                            <p class="text-emerald-400 font-bold mb-2">✅ Answer:</p>
+                            <p class="text-slate-300 mb-3">On mobile GPUs, <b>texture samples are roughly 4-10x more expensive than ALU operations</b> in terms of both latency and power consumption.</p>
+                            <p class="text-slate-300 mb-3"><b>Typical costs (relative):</b></p>
+                            <ul class="text-slate-400 text-xs space-y-1 mb-3">
+                                <li>• <b>ALU (add, mul, mad)</b> — 1 cycle, negligible power</li>
+                                <li>• <b>Texture sample (cached)</b> — 4-8 cycles, moderate power</li>
+                                <li>• <b>Texture sample (cache miss)</b> — 100+ cycles, high power + bandwidth</li>
+                                <li>• <b>Dependent texture read</b> — 2x texture cost (can't prefetch)</li>
+                            </ul>
+                            <p class="text-slate-300 mb-3"><b>Implications:</b></p>
+                            <ul class="text-slate-400 text-xs space-y-1 mb-3">
+                                <li>• Compute procedurally when possible instead of LUT textures</li>
+                                <li>• Pack multiple values into RGBA channels</li>
+                                <li>• Avoid dependent texture reads (UV computed from another texture)</li>
+                                <li>• Use smaller textures + bilinear over larger + point filtering</li>
+                            </ul>
+                            <p class="text-amber-400 text-xs italic">"I think in terms of texture:ALU ratio. If I can compute something in under 8-10 ALU ops, it's usually cheaper than a texture lookup. That's why I often compute noise or gradients procedurally rather than sampling lookup tables."</p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+            
+            <!-- Procedural & Tools Questions -->
+            <div class="bg-slate-800 p-6 rounded-xl">
+                <h3 class="text-lg font-bold text-emerald-400 mb-4">Procedural & Tools</h3>
+                <div class="space-y-4">
+                    <details class="group">
+                        <summary class="cursor-pointer border-l-2 border-emerald-500/50 pl-3 text-sm text-slate-300 hover:text-white transition-colors">"How would you design an HDA that non-technical artists can use safely?"</summary>
+                        <div class="mt-3 ml-5 p-4 bg-slate-900/60 rounded-lg text-sm">
+                            <p class="text-emerald-400 font-bold mb-2">✅ Answer:</p>
+                            <p class="text-slate-300 mb-3">The key is <b>constraining the parameter space</b> while maintaining creative flexibility. Artists should be able to break aesthetics, not the tool.</p>
+                            <p class="text-slate-300 mb-3"><b>Design principles:</b></p>
+                            <ul class="text-slate-400 text-xs space-y-1 mb-3">
+                                <li>• <b>Clamp all parameters</b> — Min/max ranges that prevent degenerate geometry (zero-area faces, inverted normals)</li>
+                                <li>• <b>Sensible defaults</b> — Tool should produce valid output with zero customization</li>
+                                <li>• <b>Progressive disclosure</b> — Basic tab with common params, Advanced tab hidden by default</li>
+                                <li>• <b>Visual feedback</b> — Show guide geometry, bounds, warnings in viewport</li>
+                                <li>• <b>Validation node</b> — Internal check that flags issues before export (non-manifold, UV overlap)</li>
+                            </ul>
+                            <p class="text-slate-300 mb-3"><b>UI/UX patterns:</b></p>
+                            <ul class="text-slate-400 text-xs space-y-1 mb-3">
+                                <li>• Presets dropdown for common configurations</li>
+                                <li>• Tooltips explaining each parameter's effect</li>
+                                <li>• "Randomize within safe bounds" button for exploration</li>
+                                <li>• Clear error messages, not cryptic Houdini cook errors</li>
+                            </ul>
+                            <p class="text-amber-400 text-xs italic">"I design HDAs like APIs—the public interface is clean and safe, the implementation complexity is hidden. Artists should be able to explore freely without ever producing invalid geometry."</p>
+                        </div>
+                    </details>
+                    
+                    <details class="group">
+                        <summary class="cursor-pointer border-l-2 border-emerald-500/50 pl-3 text-sm text-slate-300 hover:text-white transition-colors">"Explain how PDG handles dependencies between work items."</summary>
+                        <div class="mt-3 ml-5 p-4 bg-slate-900/60 rounded-lg text-sm">
+                            <p class="text-emerald-400 font-bold mb-2">✅ Answer:</p>
+                            <p class="text-slate-300 mb-3">PDG (Procedural Dependency Graph) uses a <b>directed acyclic graph (DAG)</b> where work items flow between TOP nodes. Dependencies are tracked automatically based on data flow.</p>
+                            <p class="text-slate-300 mb-3"><b>Key concepts:</b></p>
+                            <ul class="text-slate-400 text-xs space-y-1 mb-3">
+                                <li>• <b>Work Item</b> — A single unit of work (one terrain, one texture, one course)</li>
+                                <li>• <b>Upstream/Downstream</b> — Work items inherit attributes from upstream items</li>
+                                <li>• <b>Partitioning</b> — Many-to-one relationships (merge 18 holes into 1 course)</li>
+                                <li>• <b>Fan-out</b> — One-to-many (one course → 5 LOD levels)</li>
+                            </ul>
+                            <p class="text-slate-300 mb-3"><b>Dependency types:</b></p>
+                            <ul class="text-slate-400 text-xs space-y-1 mb-3">
+                                <li>• <b>File dependencies</b> — Work item declares input/output files; PDG tracks staleness</li>
+                                <li>• <b>Attribute dependencies</b> — Work item needs attribute from upstream item</li>
+                                <li>• <b>Order dependencies</b> — Explicit "wait for X before starting Y"</li>
+                            </ul>
+                            <p class="text-slate-300 mb-3"><b>Execution:</b> PDG only re-cooks work items whose inputs changed. If hole #7 is modified, only that hole and its downstream dependents re-process—not all 18 holes.</p>
+                            <p class="text-amber-400 text-xs italic">"PDG is basically a build system like Make, but for content. It tracks file and attribute dependencies, only re-cooks what changed, and can distribute work items across a render farm. Perfect for processing 43k golf courses."</p>
+                        </div>
+                    </details>
+                    
+                    <details class="group">
+                        <summary class="cursor-pointer border-l-2 border-emerald-500/50 pl-3 text-sm text-slate-300 hover:text-white transition-colors">"How do you validate procedurally generated content at scale?"</summary>
+                        <div class="mt-3 ml-5 p-4 bg-slate-900/60 rounded-lg text-sm">
+                            <p class="text-emerald-400 font-bold mb-2">✅ Answer:</p>
+                            <p class="text-slate-300 mb-3">You need <b>automated validation at multiple levels</b>: geometric, visual, and functional. Manual QA doesn't scale to thousands of variations.</p>
+                            <p class="text-slate-300 mb-3"><b>Validation layers:</b></p>
+                            <ul class="text-slate-400 text-xs space-y-1 mb-3">
+                                <li>• <b>Geometric validation</b> — Check for non-manifold edges, degenerate faces, UV overlap, vertex count within budget</li>
+                                <li>• <b>Bounds checking</b> — Asset stays within expected bounding box, no floating geometry</li>
+                                <li>• <b>Visual regression</b> — Render from fixed cameras, diff against golden masters, flag if delta > threshold</li>
+                                <li>• <b>Functional testing</b> — For games: can the ball roll correctly? Are physics colliders valid?</li>
+                            </ul>
+                            <p class="text-slate-300 mb-3"><b>Implementation:</b></p>
+                            <ul class="text-slate-400 text-xs space-y-1 mb-3">
+                                <li>• Validation as a PDG node in the pipeline—failures block export</li>
+                                <li>• Generate HTML reports with thumbnails of flagged assets</li>
+                                <li>• Statistical monitoring: if >5% of today's batch fails, alert the team</li>
+                                <li>• A/B comparison: diff new pipeline version against previous</li>
+                            </ul>
+                            <p class="text-amber-400 text-xs italic">"I built visual regression testing at Meta for avatar clothing. We rendered each variation, diffed against golden masters, and flagged deviations. Same approach works for golf courses—render each hole from a few angles, diff automatically, human reviews only the outliers."</p>
+                        </div>
+                    </details>
+                    
+                    <details class="group">
+                        <summary class="cursor-pointer border-l-2 border-emerald-500/50 pl-3 text-sm text-slate-300 hover:text-white transition-colors">"What's your approach to versioning procedural assets?"</summary>
+                        <div class="mt-3 ml-5 p-4 bg-slate-900/60 rounded-lg text-sm">
+                            <p class="text-emerald-400 font-bold mb-2">✅ Answer:</p>
+                            <p class="text-slate-300 mb-3">Procedural assets have two versioning concerns: the <b>tool version</b> (HDA, scripts) and the <b>output version</b> (generated assets). Both need tracking.</p>
+                            <p class="text-slate-300 mb-3"><b>Tool versioning:</b></p>
+                            <ul class="text-slate-400 text-xs space-y-1 mb-3">
+                                <li>• <b>Semantic versioning</b> for HDAs — Major.Minor.Patch with clear compatibility rules</li>
+                                <li>• <b>Version embedding</b> — Store tool version in output asset metadata</li>
+                                <li>• <b>Backward compatibility</b> — Old scenes should cook with new tools (or gracefully fail)</li>
+                                <li>• <b>Version locking</b> — Production can pin to a specific tool version</li>
+                            </ul>
+                            <p class="text-slate-300 mb-3"><b>Output versioning:</b></p>
+                            <ul class="text-slate-400 text-xs space-y-1 mb-3">
+                                <li>• <b>Content-addressable storage</b> — Hash the inputs; same inputs = same output</li>
+                                <li>• <b>Deterministic generation</b> — Same seed + params must produce identical output</li>
+                                <li>• <b>Manifest files</b> — Track which tool version + input hash produced each asset</li>
+                                <li>• <b>Regeneration strategy</b> — Can you rebuild old assets from source? How far back?</li>
+                            </ul>
+                            <p class="text-amber-400 text-xs italic">"I treat procedural tools like code—semantic versioning, changelog, deprecation warnings. For outputs, I use content hashing so we can detect when something actually changed vs. just rebuilt. It's critical for incremental builds and debugging regressions."</p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+            
+            <!-- Architecture & Process Questions -->
+            <div class="bg-slate-800 p-6 rounded-xl">
+                <h3 class="text-lg font-bold text-violet-400 mb-4">Architecture & Process</h3>
+                <div class="space-y-4">
+                    <details class="group">
+                        <summary class="cursor-pointer border-l-2 border-violet-500/50 pl-3 text-sm text-slate-300 hover:text-white transition-colors">"How do you balance technical debt against feature velocity?"</summary>
+                        <div class="mt-3 ml-5 p-4 bg-slate-900/60 rounded-lg text-sm">
+                            <p class="text-emerald-400 font-bold mb-2">✅ Answer:</p>
+                            <p class="text-slate-300 mb-3">Technical debt is a <b>tradeoff, not a failure</b>. The key is making it <b>visible and intentional</b>, not accidental.</p>
+                            <p class="text-slate-300 mb-3"><b>My framework:</b></p>
+                            <ul class="text-slate-400 text-xs space-y-1 mb-3">
+                                <li>• <b>Categorize debt</b> — "Reckless" (will bite us) vs. "Prudent" (acceptable shortcut with known cost)</li>
+                                <li>• <b>Document decisions</b> — ADRs (Architecture Decision Records) explaining why we took the shortcut</li>
+                                <li>• <b>Budget debt work</b> — 20% of each sprint for maintenance/refactoring, non-negotiable</li>
+                                <li>• <b>Measure pain</b> — Track time lost to workarounds; when it exceeds fix cost, prioritize</li>
+                            </ul>
+                            <p class="text-slate-300 mb-3"><b>Red lines I don't cross:</b></p>
+                            <ul class="text-slate-400 text-xs space-y-1 mb-3">
+                                <li>• No debt in safety-critical paths (aviation display rendering)</li>
+                                <li>• No debt that blocks other teams</li>
+                                <li>• No debt that makes the problem harder to fix later</li>
+                            </ul>
+                            <p class="text-amber-400 text-xs italic">"I'm pragmatic about debt—sometimes shipping faster is the right call. But I document it, budget time to pay it down, and have red lines I won't cross. The worst debt is the kind you didn't know you were taking on."</p>
+                        </div>
+                    </details>
+                    
+                    <details class="group">
+                        <summary class="cursor-pointer border-l-2 border-violet-500/50 pl-3 text-sm text-slate-300 hover:text-white transition-colors">"Describe your ideal CI/CD pipeline for art assets."</summary>
+                        <div class="mt-3 ml-5 p-4 bg-slate-900/60 rounded-lg text-sm">
+                            <p class="text-emerald-400 font-bold mb-2">✅ Answer:</p>
+                            <p class="text-slate-300 mb-3">Art asset CI/CD needs to handle <b>large files, long build times, and subjective quality</b>—different challenges than code CI.</p>
+                            <p class="text-slate-300 mb-3"><b>Pipeline stages:</b></p>
+                            <ul class="text-slate-400 text-xs space-y-1 mb-3">
+                                <li>• <b>Commit hooks</b> — Validate file formats, naming conventions, metadata before accepting</li>
+                                <li>• <b>Fast validation</b> (minutes) — Geometric checks, reference validation, thumbnail generation</li>
+                                <li>• <b>Full build</b> (hours) — LOD generation, texture compression, all platform variants</li>
+                                <li>• <b>Visual QA</b> — Automated renders, diffed against previous version, flagged for review</li>
+                                <li>• <b>Integration test</b> — Asset loads in engine, no errors, performance within budget</li>
+                            </ul>
+                            <p class="text-slate-300 mb-3"><b>Key features:</b></p>
+                            <ul class="text-slate-400 text-xs space-y-1 mb-3">
+                                <li>• <b>Incremental builds</b> — Only rebuild changed assets + dependents</li>
+                                <li>• <b>Distributed processing</b> — Fan out to render farm for parallel processing</li>
+                                <li>• <b>Artifact caching</b> — Don't rebuild if inputs haven't changed (content hashing)</li>
+                                <li>• <b>Rollback capability</b> — One-click revert to last known-good asset version</li>
+                            </ul>
+                            <p class="text-amber-400 text-xs italic">"Art CI is about fast feedback loops. Artists should know within minutes if their asset is valid, but full builds can run overnight. The key is incremental processing—43k golf courses can't rebuild from scratch on every commit."</p>
+                        </div>
+                    </details>
+                    
+                    <details class="group">
+                        <summary class="cursor-pointer border-l-2 border-violet-500/50 pl-3 text-sm text-slate-300 hover:text-white transition-colors">"How do you communicate technical constraints to non-technical stakeholders?"</summary>
+                        <div class="mt-3 ml-5 p-4 bg-slate-900/60 rounded-lg text-sm">
+                            <p class="text-emerald-400 font-bold mb-2">✅ Answer:</p>
+                            <p class="text-slate-300 mb-3">The goal is <b>informed decision-making</b>, not technical education. Stakeholders need to understand tradeoffs, not implementation details.</p>
+                            <p class="text-slate-300 mb-3"><b>Communication strategies:</b></p>
+                            <ul class="text-slate-400 text-xs space-y-1 mb-3">
+                                <li>• <b>Visual comparisons</b> — Show A/B screenshots: "This is 60fps, this is 30fps. Here's the visual difference."</li>
+                                <li>• <b>Concrete tradeoffs</b> — "We can have 10 trees at this quality OR 50 trees at lower quality"</li>
+                                <li>• <b>Time/cost framing</b> — "This approach takes 2 weeks; that one takes 6 weeks"</li>
+                                <li>• <b>Avoid jargon</b> — "Memory budget" not "VRAM allocation"; "Battery drain" not "bandwidth"</li>
+                            </ul>
+                            <p class="text-slate-300 mb-3"><b>Documentation patterns:</b></p>
+                            <ul class="text-slate-400 text-xs space-y-1 mb-3">
+                                <li>• One-pagers with executive summary at top, details below</li>
+                                <li>• Decision matrices: Option A vs. B vs. C with pros/cons</li>
+                                <li>• Interactive demos when possible—let them feel the framerate difference</li>
+                            </ul>
+                            <p class="text-amber-400 text-xs italic">"I translate technical constraints into business language. 'We'll exceed our memory budget' becomes 'Users on older phones will crash.' 'Draw calls are too high' becomes 'Battery will drain 2x faster.' That gets attention."</p>
+                        </div>
+                    </details>
+                    
+                    <details class="group">
+                        <summary class="cursor-pointer border-l-2 border-violet-500/50 pl-3 text-sm text-slate-300 hover:text-white transition-colors">"What metrics would you track for pipeline health?"</summary>
+                        <div class="mt-3 ml-5 p-4 bg-slate-900/60 rounded-lg text-sm">
+                            <p class="text-emerald-400 font-bold mb-2">✅ Answer:</p>
+                            <p class="text-slate-300 mb-3">Pipeline metrics should answer: <b>Is it fast? Is it reliable? Is it producing quality?</b></p>
+                            <p class="text-slate-300 mb-3"><b>Speed metrics:</b></p>
+                            <ul class="text-slate-400 text-xs space-y-1 mb-3">
+                                <li>• <b>Time to first feedback</b> — How long until artist knows if asset is valid?</li>
+                                <li>• <b>Full build time</b> — End-to-end processing time for a complete asset</li>
+                                <li>• <b>Incremental build time</b> — Time to process a small change</li>
+                                <li>• <b>Queue wait time</b> — How long assets sit waiting for processing?</li>
+                            </ul>
+                            <p class="text-slate-300 mb-3"><b>Reliability metrics:</b></p>
+                            <ul class="text-slate-400 text-xs space-y-1 mb-3">
+                                <li>• <b>Build success rate</b> — % of builds that complete without error</li>
+                                <li>• <b>Flaky test rate</b> — % of tests that pass/fail inconsistently</li>
+                                <li>• <b>Mean time to recovery</b> — How long to fix a broken pipeline?</li>
+                            </ul>
+                            <p class="text-slate-300 mb-3"><b>Quality metrics:</b></p>
+                            <ul class="text-slate-400 text-xs space-y-1 mb-3">
+                                <li>• <b>Validation catch rate</b> — % of issues caught by automation vs. manual QA</li>
+                                <li>• <b>Regression rate</b> — How often do we ship broken assets?</li>
+                                <li>• <b>Budget compliance</b> — % of assets within poly/texture/memory budgets</li>
+                            </ul>
+                            <p class="text-amber-400 text-xs italic">"I care most about artist iteration time and automation catch rate. If artists are waiting too long or QA is finding issues automation should catch, the pipeline isn't doing its job. I'd dashboard these and review weekly."</p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: Garmin-Specific Research -->
+        <section class="bg-slate-800 rounded-2xl p-8 border border-slate-700">
+            <h2 class="text-3xl font-bold text-white mb-6">Garmin Intelligence: Know Your Target</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="text-center p-4 bg-slate-900/50 rounded-xl">
+                    <div class="text-4xl font-black text-blue-400">43,000+</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wider mt-1">Golf Courses Worldwide</div>
+                </div>
+                <div class="text-center p-4 bg-slate-900/50 rounded-xl">
+                    <div class="text-4xl font-black text-emerald-400">G3X</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wider mt-1">Touchscreen Avionics</div>
+                </div>
+                <div class="text-center p-4 bg-slate-900/50 rounded-xl">
+                    <div class="text-4xl font-black text-violet-400">MIP</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wider mt-1">Memory-in-Pixel Displays</div>
+                </div>
+                <div class="text-center p-4 bg-slate-900/50 rounded-xl">
+                    <div class="text-4xl font-black text-amber-400">DO-178C</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wider mt-1">Aviation Software Cert</div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-4">Products You Should Know</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-4 p-3 bg-slate-900/50 rounded-lg">
+                            <span class="text-2xl">⛳</span>
+                            <div>
+                                <div class="font-bold text-white">Approach R10</div>
+                                <div class="text-xs text-slate-400">Portable launch monitor with home simulator integration</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 bg-slate-900/50 rounded-lg">
+                            <span class="text-2xl">✈️</span>
+                            <div>
+                                <div class="font-bold text-white">G1000 NXi</div>
+                                <div class="text-xs text-slate-400">Integrated flight deck for general aviation</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 bg-slate-900/50 rounded-lg">
+                            <span class="text-2xl">⌚</span>
+                            <div>
+                                <div class="font-bold text-white">Fenix Series</div>
+                                <div class="text-xs text-slate-400">Premium multisport GPS watches</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 bg-slate-900/50 rounded-lg">
+                            <span class="text-2xl">🚗</span>
+                            <div>
+                                <div class="font-bold text-white">BMW/Mercedes HMI</div>
+                                <div class="text-xs text-slate-400">OEM automotive infotainment systems</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-4">Questions to Ask Them</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="p-3 bg-slate-900/50 rounded-lg border-l-2 border-blue-500">
+                            "What's the current bottleneck in your golf course pipeline—data ingestion, processing, or QA?"
+                        </div>
+                        <div class="p-3 bg-slate-900/50 rounded-lg border-l-2 border-emerald-500">
+                            "How do you handle the transition when a course is renovated in real life?"
+                        </div>
+                        <div class="p-3 bg-slate-900/50 rounded-lg border-l-2 border-violet-500">
+                            "What's the target hardware spec for the embedded HMI work—ARM Mali, PowerVR, or Adreno?"
+                        </div>
+                        <div class="p-3 bg-slate-900/50 rounded-lg border-l-2 border-amber-500">
+                            "How does the Tech Art team interface with the DO-178C certification process?"
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: Day-Before Checklist -->
+        <section class="bg-gradient-to-r from-emerald-900/30 to-blue-900/30 rounded-2xl p-8 border border-emerald-500/30">
+            <h2 class="text-3xl font-bold text-white mb-6">📋 Day-Before Checklist</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <h3 class="font-bold text-emerald-400 mb-4">Technical Prep</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-center gap-2"><span class="w-4 h-4 border border-emerald-500 rounded"></span> Review TBR architecture diagrams</li>
+                        <li class="flex items-center gap-2"><span class="w-4 h-4 border border-emerald-500 rounded"></span> Practice VAT pipeline explanation (Orion)</li>
+                        <li class="flex items-center gap-2"><span class="w-4 h-4 border border-emerald-500 rounded"></span> Prepare self-slicing geometry walkthrough</li>
+                        <li class="flex items-center gap-2"><span class="w-4 h-4 border border-emerald-500 rounded"></span> Review Maya CDN tooling architecture</li>
+                        <li class="flex items-center gap-2"><span class="w-4 h-4 border border-emerald-500 rounded"></span> Practice visual regression testing pitch</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold text-blue-400 mb-4">Behavioral Prep</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-center gap-2"><span class="w-4 h-4 border border-blue-500 rounded"></span> STAR: Avatar clothing at scale story</li>
+                        <li class="flex items-center gap-2"><span class="w-4 h-4 border border-blue-500 rounded"></span> STAR: VAT pipeline for Quest story</li>
+                        <li class="flex items-center gap-2"><span class="w-4 h-4 border border-blue-500 rounded"></span> STAR: Maya/CDN bridge story</li>
+                        <li class="flex items-center gap-2"><span class="w-4 h-4 border border-blue-500 rounded"></span> "Why Garmin?" answer polished</li>
+                        <li class="flex items-center gap-2"><span class="w-4 h-4 border border-blue-500 rounded"></span> Questions for interviewers prepared</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold text-violet-400 mb-4">Logistics</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-center gap-2"><span class="w-4 h-4 border border-violet-500 rounded"></span> Video call setup tested</li>
+                        <li class="flex items-center gap-2"><span class="w-4 h-4 border border-violet-500 rounded"></span> Portfolio links accessible</li>
+                        <li class="flex items-center gap-2"><span class="w-4 h-4 border border-violet-500 rounded"></span> Resume printed (backup)</li>
+                        <li class="flex items-center gap-2"><span class="w-4 h-4 border border-violet-500 rounded"></span> Water and notepad ready</li>
+                        <li class="flex items-center gap-2"><span class="w-4 h-4 border border-violet-500 rounded"></span> 8 hours sleep tonight 😴</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 border-t border-slate-800 py-12 mt-12">
+        <div class="container mx-auto px-6 text-center">
+            <div class="mb-6">
+                <div class="inline-block px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-full">
+                    <span class="text-emerald-400 font-bold">🎯 You've got this, Cory!</span>
+                </div>
+            </div>
+            <p class="text-slate-500 text-sm">Study Guide for Cory Brown • Garmin Senior Technical Artist Interview • Wednesday</p>
+            <p class="text-slate-600 text-xs mt-2">Remember: They're not just hiring skills—they're hiring someone who can lead, communicate, and scale.</p>
+        </div>
+    </footer>
+
+    <script>
+        function wrapLabel(label) {
+            if (label.length <= 16) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+            for (let i = 1; i < words.length; i++) {
+                if ((currentLine + " " + words[i]).length < 16) {
+                    currentLine += " " + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        const commonTooltip = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    return Array.isArray(label) ? label.join(' ') : label;
+                }
+            }
+        };
+
+        // Skill Radar
+        new Chart(document.getElementById('skillRadar').getContext('2d'), {
+            type: 'radar',
+            data: {
+                labels: ["Procedural / Houdini", "Engine Optimization", "C++ / Engineering", "Shaders (HLSL)", "TBR Rendering"].map(wrapLabel),
+                datasets: [{
+                    label: 'Garmin Needs',
+                    data: [95, 90, 70, 85, 90],
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    borderColor: '#3b82f6',
+                    pointBackgroundColor: '#3b82f6'
+                }, {
+                    label: 'Cory Profile',
+                    data: [80, 90, 95, 95, 95],
+                    backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                    borderColor: '#10b981',
+                    pointBackgroundColor: '#10b981'
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(255,255,255,0.1)' },
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        pointLabels: { color: 'white', font: { size: 10 } },
+                        ticks: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { labels: { color: 'white' } },
+                    tooltip: commonTooltip
+                }
+            }
+        });
+
+        // TBR Chart
+        new Chart(document.getElementById('tbrChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ["Memory Bandwidth", "Draw Call Count", "Vertex Count", "Fragment Shader Complexity"].map(wrapLabel),
+                datasets: [{
+                    label: 'Optimization ROI',
+                    data: [95, 70, 50, 85],
+                    backgroundColor: ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b']
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                maintainAspectRatio: false,
+                scales: {
+                    x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'rgba(255,255,255,0.5)' } },
+                    y: { ticks: { color: 'white' } }
+                },
+                plugins: { legend: { display: false }, tooltip: commonTooltip }
+            }
+        });
+
+        // Tech Stack
+        new Chart(document.getElementById('techStackChart').getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: ["Unity / C#", "Houdini / PDG", "C++ / Embedded", "Tools / Python"].map(wrapLabel),
+                datasets: [{
+                    data: [35, 30, 20, 15],
+                    backgroundColor: ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                cutout: '75%',
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: 'white' } },
+                    tooltip: commonTooltip
+                }
+            }
+        });
+
+        // Add interactive checklist functionality
+        document.querySelectorAll('.flex.items-center.gap-2').forEach(item => {
+            const checkbox = item.querySelector('span');
+            if (checkbox && checkbox.classList.contains('border')) {
+                item.style.cursor = 'pointer';
+                item.addEventListener('click', () => {
+                    if (checkbox.classList.contains('bg-emerald-500') || 
+                        checkbox.classList.contains('bg-blue-500') || 
+                        checkbox.classList.contains('bg-violet-500')) {
+                        checkbox.classList.remove('bg-emerald-500', 'bg-blue-500', 'bg-violet-500');
+                        checkbox.innerHTML = '';
+                    } else {
+                        const color = checkbox.classList.contains('border-emerald-500') ? 'bg-emerald-500' :
+                                     checkbox.classList.contains('border-blue-500') ? 'bg-blue-500' : 'bg-violet-500';
+                        checkbox.classList.add(color);
+                        checkbox.innerHTML = '✓';
+                        checkbox.style.color = 'white';
+                        checkbox.style.fontSize = '10px';
+                        checkbox.style.display = 'flex';
+                        checkbox.style.alignItems = 'center';
+                        checkbox.style.justifyContent = 'center';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
