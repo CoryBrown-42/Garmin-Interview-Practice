@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public static class GarminTextureAuditor
 {
-    private const int MaxAllowedTextureSize = 512;
+    private const int MaxAllowedTextureSize = 512; // This is a common guideline for mobile performance, but you can adjust it as needed.
 
     [MenuItem("Tools/Garmin/Texture Auditor - Scan Folder")]
     public static void RunTextureAuditor()
@@ -27,7 +27,7 @@ public static class GarminTextureAuditor
         }
 
         string relativePath = "Assets" + selectedPath.Substring(Application.dataPath.Length);
-        
+
         Debug.Log($"Garmin Texture Auditor: Starting scan in folder: <color=yellow>{relativePath}</color>");
 
         List<string> oversizedTextures = new List<string>();
@@ -41,7 +41,7 @@ public static class GarminTextureAuditor
         foreach (string guid in guids)
         {
             string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-            
+
             // We need the TextureImporter to access import settings like maxTextureSize and mipmapEnabled
             TextureImporter textureImporter = AssetImporter.GetAtPath(assetPath) as TextureImporter;
 
@@ -49,16 +49,20 @@ public static class GarminTextureAuditor
             {
                 // This might happen if a non-texture asset was somehow included in the GUID list
                 // or if the asset is not a standard TextureImporter type.
-                continue; 
+                continue;
             }
 
             totalTexturesScanned++;
+
+            bool changed = false;
 
             // Check for oversized textures
             if (textureImporter.maxTextureSize > MaxAllowedTextureSize)
             {
                 oversizedTextures.Add($"{assetPath} (Current: {textureImporter.maxTextureSize}px)");
                 Debug.LogWarning($"<color=red>[OVERSIZED TEXTURE]</color> {assetPath} has maxTextureSize of {textureImporter.maxTextureSize}px (allowed: {MaxAllowedTextureSize}px).");
+                textureImporter.maxTextureSize = MaxAllowedTextureSize;
+                changed = true;
             }
 
             // Check for mipmaps enabled
@@ -66,6 +70,15 @@ public static class GarminTextureAuditor
             {
                 mipmapEnabledTextures.Add(assetPath);
                 Debug.LogWarning($"<color=orange>[MIPMAPS ENABLED]</color> {assetPath} has mipmaps enabled.");
+                //textureImporter.mipmapEnabled = false;
+                //changed = true;
+            }
+
+            // Apply changes if any
+            if (changed)
+            {
+                AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
+                Debug.Log($"<color=cyan>Updated import settings for:</color> {assetPath}");
             }
         }
 
