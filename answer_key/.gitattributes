@@ -1,0 +1,129 @@
+# Git LFS Configuration for Unity Golf Course Project
+# This file tracks large binary files with Git LFS to keep the main Git repository lean
+# and improve performance for distributed art teams.
+
+# -----------------------------------------------------------------------------
+# 1. Binary Assets to be Tracked by Git LFS
+# These are the files that typically cause repository bloat due to their size
+# and frequent modifications by artists.
+
+# Textures (Source Files - Unity will compress these for platform-specific builds)
+# High-resolution source textures (PSD, TGA, PNG, etc.) are often very large.
+*.bmp lfs
+*.exr lfs
+*.gif lfs
+*.hdr lfs
+*.jpeg lfs
+*.jpg lfs
+*.png lfs
+*.psd lfs
+*.tga lfs
+*.tiff lfs
+*.dds lfs
+*.iff lfs
+*.jp2 lfs
+*.pcx lfs
+*.raw lfs
+*.sgi lfs
+*.svg lfs # SVG can be text, but if treated as a graphic asset, LFS is safer.
+
+# Models / Meshes (Source Files)
+# Complex 3D models for terrain, environment props, clubs, or characters.
+*.blend lfs # Blender files
+*.fbx lfs
+*.obj lfs
+*.max lfs # 3ds Max files
+*.ma lfs # Maya ASCII (often text, but can be very large and reference binaries)
+*.mb lfs # Maya Binary
+*.c4d lfs # Cinema 4D
+*.dae lfs # Collada
+*.dxf lfs # AutoCAD DXF
+*.3ds lfs # 3D Studio
+*.lwo lfs # LightWave Object
+*.lxo lfs # MODO
+*.skp lfs # SketchUp
+*.ztl lfs # ZBrush Tool (if committed directly, usually too big)
+*.gltf lfs # GL Transmission Format (can be large JSON or binary)
+*.glb lfs # GL Transmission Format Binary
+
+# Audio
+# Background music, ambient sounds, club hit sounds, voiceovers.
+*.aiff lfs
+*.flac lfs
+*.mp3 lfs
+*.ogg lfs
+*.wav lfs
+*.wma lfs
+
+# Video (if used for cutscenes, intros, or dynamic elements)
+*.avi lfs
+*.mp4 lfs
+*.mov lfs
+*.webm lfs
+*.wmv lfs
+
+# Fonts
+# Custom fonts can be surprisingly large due to extensive glyph sets.
+*.otf lfs
+*.ttf lfs
+
+# Other potential large binaries (e.g., third-party SDKs, pre-compiled plugins)
+*.zip lfs
+*.rar lfs
+*.7z lfs
+*.pdf lfs # For documentation
+*.dll lfs # Compiled native plugins (e.g., from an SDK)
+*.so lfs  # Android native libraries
+*.bundle lfs # macOS bundles
+*.dylib lfs # macOS dynamic libraries
+*.a lfs # iOS static libraries
+
+# -----------------------------------------------------------------------------
+# 2. Unity-Specific Files that *SHOULD NOT* be Tracked by Git LFS
+# These are primarily YAML text files that Git is excellent at diffing and merging.
+# Putting these into LFS would defeat core Git functionality and lead to merge hell.
+
+# Unity Scene and Prefab files - YAML text files
+*.unity text diff=unity merge=unity
+*.prefab text diff=unity merge=unity
+
+# Asset files - includes Materials, ScriptableObjects, Animation files, etc.
+*.asset text diff=unity merge=unity
+*.mat text diff=unity merge=unity # Material files (explicit, often also .asset)
+*.anim text diff=unity merge=unity # Animation clips
+*.controller text diff=unity merge=unity # Animator controllers
+*.overrideController text diff=unity merge=unity # Animator override controllers
+*.rendertexture text diff=unity merge=unity # Render Texture assets (these are references, not raw binary)
+*.shadervariants text diff=unity merge=unity # Shader variant collections
+*.lighting text diff=unity merge=unity # Lighting settings (Global Illumination)
+*.physicsmaterial text diff=unity merge=unity # Physics materials
+*.physicmaterial2d text diff=unity merge=unity # 2D Physics materials
+*.fontsettings text diff=unity merge=unity # Font settings assets
+
+# Metadata files - YAML text files, crucial for Unity's asset linking.
+*.meta text diff=unity merge=unity
+
+# Code and Shader files - pure text
+*.cs text
+*.shader text
+*.cginc text
+*.hlsl text
+*.glsl text
+*.compute text
+
+# Configuration and data files - generally text-based
+*.json text
+*.xml text
+*.txt text
+*.csv text
+*.md text
+*.yaml text
+*.yml text
+*.asmdef text
+
+# Define the 'unity' diff driver for better readability of Unity YAML files.
+# This generally needs to be configured in your global or local `.git/config` for visual tools,
+# but `diff=unity` tells Git these files are special for diffing purposes.
+# Example for .git/config:
+# [diff "unity"]
+#   textconv = "C:/Program Files/Unity/Hub/Editor/<UNITY_VERSION>/Editor/Data/Tools/UnityYAMLMerge.exe" diff "$BASENAME" "$REMOTE" "$LOCAL" "$BASE"
