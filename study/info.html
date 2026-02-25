@@ -1,3 +1,412 @@
+<!-- BEGIN TLDR SECTION -->
+<section class="bg-gradient-to-r from-blue-900 to-slate-900 rounded-2xl p-6 border border-blue-500/30 mb-8 text-white shadow-lg">
+    <h2 class="text-2xl font-bold mb-4">📋 TLDR: Core Answers</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <ul class="space-y-3 text-base">
+                <li><span class="font-bold text-blue-400">GC Optimization (Dashboard):</span> <span class="text-slate-200">Cache UI references and use StringBuilder to avoid per-frame allocations and garbage collection spikes.</span></li>
+                <li><span class="font-bold text-blue-400">Vector Dot (Golf Ball Trajectory):</span> <span class="text-slate-200">Use dot product and cosine of angle to check if ball velocity is within a 30-degree cone of the screen normal.</span></li>
+                <li><span class="font-bold text-blue-400">Draw Call Batching:</span> <span class="text-slate-200">Group renderers by shared material and use static/dynamic batching or GPU instancing to reduce draw calls.</span></li>
+                <li><span class="font-bold text-blue-400">Tile-Based GPU Optimization:</span> <span class="text-slate-200">Transparent materials with high render queue cause overdraw; minimize their use for mobile GPUs.</span></li>
+            </ul>
+        </div>
+        <div>
+            <ul class="space-y-3 text-base">
+                <li><span class="font-bold text-blue-400">Procedural Golf Course Mesh:</span> <span class="text-slate-200">Generate fairway mesh by creating left/right vertices from center points, calculating UVs and triangles efficiently.</span></li>
+                <li><span class="font-bold text-blue-400">PBR Material Validator:</span> <span class="text-slate-200">Validate albedo brightness, metallic map binariness, and normal map import settings for correct PBR materials.</span></li>
+                <li><span class="font-bold text-blue-400">LOD Distance Calculator:</span> <span class="text-slate-200">Calculate LOD transitions based on object size, camera FOV, and target pixel coverage to prevent popping.</span></li>
+                <li><span class="font-bold text-blue-400">Asset Pipeline Audit:</span> <span class="text-slate-200">Scan textures in a folder; flag those with size &gt; 512px or mipmaps enabled for mobile performance.</span></li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!-- END TLDR SECTION -->
+
+<!-- BEGIN FORMULAS SECTION -->
+<style>
+    .formula-card { background: rgba(15, 23, 42, 0.8); border-radius: 0.75rem; overflow: hidden; }
+    .formula-header { padding: 0.75rem 1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .formula-num { width: 1.5rem; height: 1.5rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 800; flex-shrink: 0; }
+    .formula-body { padding: 0 1rem 1rem 1rem; }
+    .formula-row { background: rgba(30, 41, 59, 0.6); border-radius: 0.5rem; padding: 0.625rem 0.75rem; margin-bottom: 0.5rem; }
+    .formula-row:last-child { margin-bottom: 0; }
+    .formula-label { font-size: 0.625rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+    .formula-math { font-family: 'Courier New', monospace; font-size: 0.8rem; line-height: 1.6; color: #6ee7b7; }
+    .formula-math .hl-key { color: #93c5fd; }
+    .formula-math .hl-val { color: #fbbf24; }
+    .formula-math .hl-op { color: #c4b5fd; }
+    .formula-math .hl-cmt { color: #64748b; font-style: italic; }
+    .formula-math .hl-warn { color: #fb923c; }
+    .formula-note { font-size: 0.675rem; color: #94a3b8; padding: 0.5rem 0.75rem; background: rgba(30, 41, 59, 0.3); border-radius: 0 0 0.5rem 0.5rem; border-top: 1px solid rgba(100, 116, 139, 0.15); display: flex; align-items: flex-start; gap: 0.35rem; }
+    .formula-divider { height: 1px; background: linear-gradient(to right, transparent, rgba(100,116,139,0.2), transparent); margin: 0.35rem 0; }
+</style>
+
+<section class="bg-gradient-to-br from-slate-900 via-blue-900/30 to-slate-900 rounded-2xl p-6 border border-emerald-500/30 mb-8 text-white shadow-lg">
+    <h2 class="text-2xl font-bold mb-1">🧮 Quick Reference: Key Formulas</h2>
+    <p class="text-slate-400 text-xs mb-5">Formulas and patterns for each coding problem — memorize the highlighted values</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+        <!-- 1. GC Optimization -->
+        <div class="formula-card border border-blue-500/20">
+            <div class="formula-header" style="background: linear-gradient(135deg, rgba(59,130,246,0.15), transparent);">
+                <div class="formula-num bg-blue-500 text-white">1</div>
+                <div>
+                    <div class="text-sm font-bold text-white">GC Optimization</div>
+                    <div class="text-xs text-blue-400" style="font-size:0.625rem;">Dashboard — Pattern Based</div>
+                </div>
+            </div>
+            <div class="formula-body">
+                <div class="formula-row">
+                    <div class="formula-label text-blue-400">Core Pattern</div>
+                    <div class="formula-math">
+                        <span class="hl-cmt">// Cache once at init</span><br>
+                        <span class="hl-key">private</span> Text <span class="hl-val">_cachedText</span>;<br>
+                        <span class="hl-key">StringBuilder</span> _sb = <span class="hl-key">new</span> StringBuilder(<span class="hl-val">256</span>);
+                    </div>
+                </div>
+                <div class="formula-row">
+                    <div class="formula-label text-blue-400">Per-Frame (Zero Alloc)</div>
+                    <div class="formula-math">
+                        _sb.<span class="hl-key">Clear</span>();<br>
+                        _sb.<span class="hl-key">Append</span>(<span class="hl-val">"Score: "</span>).<span class="hl-key">Append</span>(score);<br>
+                        _cachedText.text = _sb.<span class="hl-key">ToString</span>();
+                    </div>
+                </div>
+                <div class="formula-row" style="background: rgba(59,130,246,0.08);">
+                    <div class="formula-label text-blue-300">Rule</div>
+                    <div class="formula-math" style="font-size:0.75rem;">
+                        allocations/frame = <span class="hl-val">0</span> → GC spikes = <span class="hl-val">0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="formula-note"><span>💡</span> Avoid <code style="color:#fbbf24;">string +</code> and <code style="color:#fbbf24;">GetComponent()</code> in Update loops</div>
+        </div>
+
+        <!-- 2. Vector Dot Product -->
+        <div class="formula-card border border-blue-500/20">
+            <div class="formula-header" style="background: linear-gradient(135deg, rgba(59,130,246,0.15), transparent);">
+                <div class="formula-num bg-blue-500 text-white">2</div>
+                <div>
+                    <div class="text-sm font-bold text-white">Vector Dot Product</div>
+                    <div class="text-xs text-blue-400" style="font-size:0.625rem;">Golf Ball Trajectory — 30° Cone Check</div>
+                </div>
+            </div>
+            <div class="formula-body">
+                <div class="formula-row">
+                    <div class="formula-label text-blue-400">Dot Product</div>
+                    <div class="formula-math">
+                        <span class="hl-key">dot</span>(<span class="hl-op">A</span>, <span class="hl-op">B</span>) = A<sub>x</sub>·B<sub>x</sub> + A<sub>y</sub>·B<sub>y</sub> + A<sub>z</sub>·B<sub>z</sub>
+                    </div>
+                </div>
+                <div class="formula-row">
+                    <div class="formula-label text-blue-400">Angle Between Vectors</div>
+                    <div class="formula-math">
+                        <span class="hl-key">cos</span>(θ) = <span class="hl-key">dot</span>( <span class="hl-key">normalize</span>(velocity), screenNormal )
+                    </div>
+                </div>
+                <div class="formula-row" style="background: rgba(59,130,246,0.08);">
+                    <div class="formula-label text-blue-300">Cone Test</div>
+                    <div class="formula-math" style="font-size:0.85rem;">
+                        isInCone = <span class="hl-key">cos</span>(θ) <span class="hl-op">≥</span> <span class="hl-key">cos</span>(<span class="hl-val">30°</span>)<br>
+                        isInCone = <span class="hl-key">cos</span>(θ) <span class="hl-op">≥</span> <span class="hl-val" style="font-size:1rem; font-weight:bold;">0.866</span>
+                    </div>
+                </div>
+            </div>
+            <div class="formula-note"><span>💡</span> Dot of <b>normalized</b> vectors = cosine of angle between them. No trig needed at runtime.</div>
+        </div>
+
+        <!-- 3. Draw Call Batching -->
+        <div class="formula-card border border-emerald-500/20">
+            <div class="formula-header" style="background: linear-gradient(135deg, rgba(16,185,129,0.15), transparent);">
+                <div class="formula-num bg-emerald-500 text-white">3</div>
+                <div>
+                    <div class="text-sm font-bold text-white">Draw Call Batching</div>
+                    <div class="text-xs text-emerald-400" style="font-size:0.625rem;">Instancing &amp; Static Batching</div>
+                </div>
+            </div>
+            <div class="formula-body">
+                <div class="formula-row">
+                    <div class="formula-label text-emerald-400">Batching Savings</div>
+                    <div class="formula-math">
+                        <span class="hl-cmt">// Before</span><br>
+                        drawCalls = <span class="hl-warn">numObjects</span><br>
+                        <span class="hl-cmt">// After batching</span><br>
+                        drawCalls = <span class="hl-val">numUniqueMaterials</span>
+                    </div>
+                </div>
+                <div class="formula-row">
+                    <div class="formula-label text-emerald-400">GPU Instancing</div>
+                    <div class="formula-math">
+                        <span class="hl-val">1</span> draw call = <span class="hl-key">N</span> instances × (same mesh + same material)
+                    </div>
+                </div>
+                <div class="formula-row">
+                    <div class="formula-label text-emerald-400">Static Batching</div>
+                    <div class="formula-math">
+                        combinedMesh.verts = <span class="hl-op">Σ</span> mesh[i].vertices<br>
+                        <span class="hl-cmt">// ⚠ Non-moving objects only</span>
+                    </div>
+                </div>
+            </div>
+            <div class="formula-note"><span>💡</span> Group by shared material → minimize GPU state changes</div>
+        </div>
+
+        <!-- 4. Tile-Based GPU -->
+        <div class="formula-card border border-emerald-500/20">
+            <div class="formula-header" style="background: linear-gradient(135deg, rgba(16,185,129,0.15), transparent);">
+                <div class="formula-num bg-emerald-500 text-white">4</div>
+                <div>
+                    <div class="text-sm font-bold text-white">Tile-Based GPU Optimization</div>
+                    <div class="text-xs text-emerald-400" style="font-size:0.625rem;">Overdraw, Tile Flush &amp; MSAA</div>
+                </div>
+            </div>
+            <div class="formula-body">
+                <div class="formula-row">
+                    <div class="formula-label text-emerald-400">Overdraw Ratio</div>
+                    <div class="formula-math">
+                        overdraw = <span class="hl-op">Σ</span>(fragmentsDrawn) / totalPixels<br>
+                        <span class="hl-cmt">// Target:</span> overdraw <span class="hl-op">≤</span> <span class="hl-val">2.0×</span> <span class="hl-cmt">for mobile</span>
+                    </div>
+                </div>
+                <div class="formula-row">
+                    <div class="formula-label text-emerald-400">Tile Flush Cost (TBR)</div>
+                    <div class="formula-math">
+                        flushCost <span class="hl-op">∝</span> tileSize <span class="hl-op">×</span> numRenderTargets<br>
+                        <span class="hl-warn">// Every render-to-texture = full tile flush!</span>
+                    </div>
+                </div>
+                <div class="formula-row" style="background: rgba(16,185,129,0.08);">
+                    <div class="formula-label text-emerald-300">MSAA Comparison</div>
+                    <div class="formula-math">
+                        <span class="hl-key">TBR</span>:&nbsp; MSAA cost <span class="hl-op">≈</span> <span class="hl-val" style="font-weight:bold;">0</span> &nbsp;<span class="hl-cmt">(on-chip resolve)</span><br>
+                        <span class="hl-warn">IMR</span>:&nbsp; MSAA cost = sampleCount <span class="hl-op">×</span> bandwidth
+                    </div>
+                </div>
+            </div>
+            <div class="formula-note"><span>💡</span> Minimize transparent objects + avoid mid-frame tile flushes. MSAA is <b>free</b> on TBR if resolved at pass end.</div>
+        </div>
+
+        <!-- 5. Procedural Golf Course Mesh -->
+        <div class="formula-card border border-violet-500/20">
+            <div class="formula-header" style="background: linear-gradient(135deg, rgba(139,92,246,0.15), transparent);">
+                <div class="formula-num bg-violet-500 text-white">5</div>
+                <div>
+                    <div class="text-sm font-bold text-white">Procedural Golf Course Mesh</div>
+                    <div class="text-xs text-violet-400" style="font-size:0.625rem;">Spline → Vertices, UVs &amp; Triangles</div>
+                </div>
+            </div>
+            <div class="formula-body">
+                <div class="formula-row">
+                    <div class="formula-label text-violet-400">Direction Vectors</div>
+                    <div class="formula-math">
+                        <span class="hl-key">forward</span> = <span class="hl-key">normalize</span>(centerPt[i+1] − centerPt[i])<br>
+                        <span class="hl-key">right</span> &nbsp;&nbsp;= <span class="hl-key">cross</span>(forward, Vector3.<span class="hl-val">up</span>)
+                    </div>
+                </div>
+                <div class="formula-row">
+                    <div class="formula-label text-violet-400">Vertex Positions</div>
+                    <div class="formula-math">
+                        leftVert &nbsp;= centerPt[i] <span class="hl-op">−</span> right <span class="hl-op">×</span> <span class="hl-val">halfWidth</span><br>
+                        rightVert = centerPt[i] <span class="hl-op">+</span> right <span class="hl-op">×</span> <span class="hl-val">halfWidth</span>
+                    </div>
+                </div>
+                <div class="formula-row">
+                    <div class="formula-label text-violet-400">UV Mapping</div>
+                    <div class="formula-math">
+                        uv.x = <span class="hl-val">0.0</span> <span class="hl-cmt">(left)</span> &nbsp;or&nbsp; <span class="hl-val">1.0</span> <span class="hl-cmt">(right)</span><br>
+                        uv.y = distAlongSpline / totalLength
+                    </div>
+                </div>
+                <div class="formula-row" style="background: rgba(139,92,246,0.08);">
+                    <div class="formula-label text-violet-300">Triangle Indices (per quad)</div>
+                    <div class="formula-math">
+                        tri1 = [ i×2, &nbsp;i×2+1, &nbsp;(i+1)×2 &nbsp;&nbsp;]<br>
+                        tri2 = [ (i+1)×2, &nbsp;i×2+1, &nbsp;(i+1)×2+1 ]
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. PBR Material Validator -->
+        <div class="formula-card border border-violet-500/20">
+            <div class="formula-header" style="background: linear-gradient(135deg, rgba(139,92,246,0.15), transparent);">
+                <div class="formula-num bg-violet-500 text-white">6</div>
+                <div>
+                    <div class="text-sm font-bold text-white">PBR Material Validator</div>
+                    <div class="text-xs text-violet-400" style="font-size:0.625rem;">Albedo, Metallic &amp; Normal Checks</div>
+                </div>
+            </div>
+            <div class="formula-body">
+                <div class="formula-row">
+                    <div class="formula-label text-violet-400">Albedo Brightness (Luminance)</div>
+                    <div class="formula-math">
+                        lum = <span class="hl-val">0.2126</span>·R + <span class="hl-val">0.7152</span>·G + <span class="hl-val">0.0722</span>·B
+                    </div>
+                    <div class="formula-divider"></div>
+                    <div class="formula-math" style="font-size:0.7rem; margin-top:0.25rem;">
+                        valid range: &nbsp;<span class="hl-val">0.03</span> <span class="hl-op">≤</span> lum <span class="hl-op">≤</span> <span class="hl-val">0.8</span>
+                    </div>
+                </div>
+                <div class="formula-row">
+                    <div class="formula-label text-violet-400">Metallic Binariness</div>
+                    <div class="formula-math">
+                        <span class="hl-key">∀</span> pixels: &nbsp;value <span class="hl-op">≤</span> <span class="hl-val">0.1</span> &nbsp;<span class="hl-key">OR</span>&nbsp; value <span class="hl-op">≥</span> <span class="hl-val">0.9</span>
+                    </div>
+                    <div class="formula-divider"></div>
+                    <div style="font-size:0.625rem; color:#64748b; margin-top:0.2rem;">Metallic is binary — metal or non-metal, never in between</div>
+                </div>
+                <div class="formula-row" style="background: rgba(139,92,246,0.08);">
+                    <div class="formula-label text-violet-300">Normal Map Validation</div>
+                    <div class="formula-math">
+                        <span class="hl-key">length</span>( normal.xyz <span class="hl-op">×</span> 2 <span class="hl-op">−</span> 1 ) <span class="hl-op">≈</span> <span class="hl-val">1.0</span>
+                    </div>
+                    <div class="formula-divider"></div>
+                    <div style="font-size:0.625rem; color:#64748b; margin-top:0.2rem;">+ verify texture import type == <span style="color:#fbbf24;">"Normal Map"</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. LOD Distance Calculator -->
+        <div class="formula-card border border-amber-500/20">
+            <div class="formula-header" style="background: linear-gradient(135deg, rgba(245,158,11,0.15), transparent);">
+                <div class="formula-num bg-amber-500 text-white">7</div>
+                <div>
+                    <div class="text-sm font-bold text-white">LOD Distance Calculator</div>
+                    <div class="text-xs text-amber-400" style="font-size:0.625rem;">Screen Coverage → Transition Distance</div>
+                </div>
+            </div>
+            <div class="formula-body">
+                <div class="formula-row">
+                    <div class="formula-label text-amber-400">Screen Height at Distance</div>
+                    <div class="formula-math">
+                        screenH = <span class="hl-val">2</span> <span class="hl-op">×</span> dist <span class="hl-op">×</span> <span class="hl-key">tan</span>( FOV / <span class="hl-val">2</span> )
+                    </div>
+                </div>
+                <div class="formula-row">
+                    <div class="formula-label text-amber-400">Pixel Coverage</div>
+                    <div class="formula-math">
+                        pixelCov = ( objSize / screenH ) <span class="hl-op">×</span> screenResY
+                    </div>
+                </div>
+                <div class="formula-row" style="background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2);">
+                    <div class="formula-label text-amber-300">⭐ LOD Transition Distance</div>
+                    <div class="formula-math" style="font-size:0.9rem;">
+                        lodDist = <span style="border-bottom: 2px solid #fbbf24; padding-bottom:1px;"><span class="hl-key">objSize</span> <span class="hl-op">×</span> <span class="hl-key">screenResY</span></span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#64748b;">―――――――――――――――――――――</span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="hl-val">2</span> <span class="hl-op">×</span> <span class="hl-key">targetPx</span> <span class="hl-op">×</span> <span class="hl-key">tan</span>(<span class="hl-key">FOV</span>/<span class="hl-val">2</span>)
+                    </div>
+                </div>
+            </div>
+            <div class="formula-note"><span>📐</span> Example: <b>2m</b> object, <b>1080p</b>, <b>100px</b> target, <b>60° FOV</b> → <b style="color:#fbbf24;">~18.7m</b></div>
+        </div>
+
+        <!-- 8. Asset Pipeline Audit -->
+        <div class="formula-card border border-amber-500/20">
+            <div class="formula-header" style="background: linear-gradient(135deg, rgba(245,158,11,0.15), transparent);">
+                <div class="formula-num bg-amber-500 text-white">8</div>
+                <div>
+                    <div class="text-sm font-bold text-white">Asset Pipeline Audit</div>
+                    <div class="text-xs text-amber-400" style="font-size:0.625rem;">Texture Memory &amp; Mobile Flags</div>
+                </div>
+            </div>
+            <div class="formula-body">
+                <div class="formula-row">
+                    <div class="formula-label text-amber-400">Mipmap Memory Overhead</div>
+                    <div class="formula-math">
+                        memWithMips = baseMem <span class="hl-op">×</span> <span class="hl-val" style="font-size:0.9rem; font-weight:bold;">4/3</span>
+                        &nbsp;&nbsp;<span class="hl-cmt">// +33% extra</span>
+                    </div>
+                </div>
+                <div class="formula-row">
+                    <div class="formula-label text-amber-400">VRAM Per Texture</div>
+                    <div class="formula-math">
+                        bytes = width <span class="hl-op">×</span> height <span class="hl-op">×</span> bpp / <span class="hl-val">8</span>
+                    </div>
+                    <div class="formula-divider"></div>
+                    <div style="display:flex; gap:1rem; margin-top:0.3rem;">
+                        <span style="font-size:0.625rem;"><span style="color:#10b981;">ASTC 4×4</span> <span style="color:#64748b;">= 8 bpp</span></span>
+                        <span style="font-size:0.625rem;"><span style="color:#fb923c;">RGBA32</span> <span style="color:#64748b;">= 32 bpp</span></span>
+                    </div>
+                </div>
+                <div class="formula-row" style="background: rgba(245,158,11,0.08);">
+                    <div class="formula-label text-amber-300">Mobile Audit Flags</div>
+                    <div class="formula-math" style="font-size:0.75rem;">
+                        <span class="hl-warn">⚠</span> size <span class="hl-op">&gt;</span> <span class="hl-val">512</span>px<br>
+                        <span class="hl-warn">⚠</span> mipmaps enabled on mobile target<br>
+                        <span class="hl-warn">⚠</span> format <span class="hl-op">≠</span> <span class="hl-val">ASTC</span>
+                    </div>
+                </div>
+            </div>
+            <div class="formula-note"><span>📊</span> 512² ASTC ≈ <b style="color:#10b981;">256KB</b> &nbsp;vs&nbsp; 512² RGBA32 ≈ <b style="color:#fb923c;">1MB</b> — 4× difference!</div>
+        </div>
+
+        <!-- 9. Shader Math: Fresnel & Related -->
+        <div class="formula-card border border-violet-500/20">
+            <div class="formula-header" style="background: linear-gradient(135deg, rgba(139,92,246,0.15), transparent);">
+                <div class="formula-num bg-violet-500 text-white">9</div>
+                <div>
+                    <div class="text-sm font-bold text-white">Shader Math: Fresnel & Related</div>
+                    <div class="text-xs text-violet-400" style="font-size:0.625rem;">Fresnel, Specular, Diffuse, SSS</div>
+                </div>
+            </div>
+            <div class="formula-body">
+                <div class="formula-row">
+                    <div class="formula-label text-violet-400">Fresnel (Schlick's Approximation)</div>
+                    <div class="formula-math">
+                        F = F0 + (1 - F0) * pow(1 - dot(V, N), 5)<br>
+                        <span class="hl-cmt">// F0 = base reflectance (e.g. 0.04 for dielectrics)</span><br>
+                        <span class="hl-cmt">// V = view direction, N = surface normal</span>
+                    </div>
+                </div>
+                <div class="formula-row">
+                    <div class="formula-label text-violet-400">GGX Microfacet (Cook-Torrance)</div>
+                    <div class="formula-math">
+                        D<sub>GGX</sub> = α² / [π ((dot(N,H))² (α² - 1) + 1)²]<br>
+                        G<sub>Smith</sub> = 2 / [1 + sqrt(1 + α² (1 - dot(N,V)²) / dot(N,V)²)]<br>
+                        <span class="hl-cmt">// α = roughness, H = half vector</span>
+                    </div>
+                </div>
+                <div class="formula-row">
+                    <div class="formula-label text-violet-400">Cook-Torrance BRDF</div>
+                    <div class="formula-math">
+                        BRDF = (D * F * G) / (4 * dot(N,V) * dot(N,L))
+                    </div>
+                </div>
+                <div class="formula-row">
+                    <div class="formula-label text-violet-400">Oren-Nayar Diffuse</div>
+                    <div class="formula-math">
+                        diffuse = A + B * max(0, dot(V, H))<br>
+                        <span class="hl-cmt">// A, B depend on surface roughness</span>
+                    </div>
+                </div>
+                <div class="formula-row">
+                    <div class="formula-label text-violet-400">Subsurface Scattering (SSS)</div>
+                    <div class="formula-math">
+                        SSS = exp(-thickness * scale) * color<br>
+                        <span class="hl-cmt">// thickness = distance through object</span>
+                    </div>
+                </div>
+                <div class="formula-row">
+                    <div class="formula-label text-violet-400">Signed Distance Field (SDF)</div>
+                    <div class="formula-math">
+                        sdf = length(P - center) - radius<br>
+                        <span class="hl-cmt">// Sphere SDF example</span>
+                    </div>
+                </div>
+                <div class="formula-row">
+                    <div class="formula-label text-violet-400">Normal from SDF</div>
+                    <div class="formula-math">
+                        N = normalize(gradient(sdf(P)))
+                    </div>
+                </div>
+            </div>
+            <div class="formula-note"><span>💡</span> These formulas are core to modern physically-based rendering and real-time shaders.</div>
+        </div>
+
+    </div>
+</section>
+<!-- END FORMULAS SECTION -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -78,10 +487,10 @@
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div>
                 <h1 class="text-2xl md:text-3xl font-black tracking-tight text-white">GARMIN <span class="text-blue-400">STUDY GUIDE</span></h1>
-                <p class="text-sm text-blue-200 font-medium text-uppercase">Senior Tech Artist Prep • Cory Brown</p>
+                <p class="text-sm text-blue-200 font-medium text-uppercase">Senior Unity Technical Artist Interview Prep</p>
             </div>
             <div class="hidden md:block">
-                <span class="px-3 py-1 bg-emerald-500/20 text-emerald-300 rounded-full text-xs font-bold border border-emerald-500/50">CANDIDATE: CORY BROWN</span>
+                <!-- Candidate badge removed for generalization -->
             </div>
         </div>
     </header>
@@ -122,7 +531,7 @@
             <div class="max-w-4xl mx-auto text-center mb-12">
                 <h2 class="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">Proceduralism & Performance</h2>
                 <p class="text-lg text-slate-300 leading-relaxed">
-                    At Garmin, a Technical Artist is a force-multiplier. Whether you are automating the generation of 43,000 golf courses or squeezing 60fps out of a low-power aviation display, your focus is on <b>scale</b> and <b>efficiency</b>.
+                    At Garmin, a Senior Unity Technical Artist is a force-multiplier. The role focuses on automating large-scale content generation and optimizing performance for embedded and mobile platforms, with an emphasis on <b>scale</b> and <b>efficiency</b>.
                 </p>
             </div>
 
@@ -157,25 +566,25 @@
 
         <!-- Skill Analysis Radar -->
         <section class="bg-slate-800 rounded-2xl p-8 shadow-xl border border-slate-700">
-            <h2 class="text-3xl font-bold text-white mb-4 border-b border-slate-700 pb-4">Alignment Analysis</h2>
+            <h2 class="text-3xl font-bold text-white mb-4 border-b border-slate-700 pb-4">Role Alignment Analysis</h2>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div class="chart-container">
                     <canvas id="skillRadar"></canvas>
                 </div>
                 <div>
-                    <h3 class="text-xl font-bold text-blue-400 mb-4">Your Competitive Advantages</h3>
+                    <h3 class="text-xl font-bold text-blue-400 mb-4">Core Competencies for Garmin</h3>
                     <div class="space-y-6 text-sm text-slate-300">
                         <div class="term-card" style="border-left-color: #3b82f6;">
-                            <span class="font-bold text-blue-400">🎯 TBR Expert:</span> "I've shipped on <b>Quest (Adreno)</b>—a TBR architecture. I understand tile flushes, HSR, and why MSAA is free if you resolve at pass end. This maps directly to Garmin's embedded GPUs."
+                            <span class="font-bold text-blue-400">🎯 TBR Expert:</span> Experience optimizing for tile-based rendering architectures (Quest/Adreno, PowerVR, Mali). Understands tile flushes, HSR, and MSAA strategies for embedded GPUs.
                         </div>
                         <div class="term-card" style="border-left-color: #8b5cf6;">
-                            <span class="font-bold text-violet-400">✨ Shader Wizard:</span> "I've written <b>VAT playback shaders</b>, avatar skin/eye shaders, and raymarching effects. I think in ALU cycles and cache efficiency, not just visual output."
+                            <span class="font-bold text-violet-400">✨ Shader Wizard:</span> Skilled in VAT playback shaders, avatar skin/eye shaders, raymarching effects, and profiling shader cost in ALU cycles and cache efficiency.
                         </div>
                         <div class="term-card" style="border-left-color: #f43f5e;">
-                            <span class="font-bold text-rose-400">⚡ C++ Systems:</span> "I write <b>native Unity plugins</b> and performance-critical code. I understand embedded constraints—no GC, no dynamic allocation in hot paths, deterministic performance."
+                            <span class="font-bold text-rose-400">⚡ C++ Systems:</span> Writes native Unity plugins and performance-critical code. Understands embedded constraints—no GC, no dynamic allocation in hot paths, deterministic performance.
                         </div>
                         <div class="term-card" style="border-left-color: #10b981;">
-                            <span class="font-bold text-emerald-400">🔧 Procedural Bridge:</span> "I've built <b>Houdini Python pipelines</b> for VATs and avatar clothing at Meta. I know how to make procedural systems that scale to 100k+ variations with automated QA."
+                            <span class="font-bold text-emerald-400">🔧 Procedural Bridge:</span> Builds Houdini Python pipelines for VATs and procedural clothing. Designs systems that scale to 100k+ variations with automated QA.
                         </div>
                     </div>
                 </div>
@@ -513,10 +922,6 @@
                             <p class="text-slate-400">Color (diffuse) attribute</p>
                         </div>
                         <div class="bg-slate-900/50 p-2 rounded">
-                            <span class="text-emerald-400 font-bold">@pscale</span>
-                            <p class="text-slate-400">Point scale for instancing</p>
-                        </div>
-                        <div class="bg-slate-900/50 p-2 rounded">
                             <span class="text-emerald-400 font-bold">Wrangle</span>
                             <p class="text-slate-400">VEX code node</p>
                         </div>
@@ -618,7 +1023,7 @@
             
             <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-700">
                 <h4 class="font-bold text-white mb-2">🗣️ How to Frame This in the Interview</h4>
-                <p class="text-sm text-slate-300">"At Meta, I worked on procedural systems at a scale similar to what Garmin faces. Our avatar clothing system had to handle thousands of body variations—just like your golf courses handle thousands of terrain variations. I built the Houdini Python tools, the Maya integration, and the automated visual regression testing that made it all work at scale."</p>
+                <p class="text-sm text-slate-300">"I've worked on procedural systems at a scale similar to what Garmin faces. Our avatar clothing system had to handle thousands of body variations—just like your golf courses handle thousands of terrain variations. I built the Houdini Python tools, the Maya integration, and the automated visual regression testing that made it all work at scale."</p>
             </div>
         </section>
 
@@ -792,7 +1197,7 @@
             
             <div class="bg-slate-900/60 p-4 rounded-lg border border-emerald-500/30">
                 <h4 class="font-bold text-emerald-400 mb-2">🗣️ Interview Talking Point</h4>
-                <p class="text-sm text-slate-300">"At Meta, I built the VAT pipeline for Orion Games that let us ship Houdini-quality cloth simulation on Quest at 72fps. The same technique could dramatically improve Garmin's golf course rendering—imagine wind-driven grass across 43,000 courses with zero CPU overhead. I'd love to bring that expertise here."</p>
+                <p class="text-sm text-slate-300">"I built the VAT pipeline for Orion Games that let us ship Houdini-quality cloth simulation on Quest at 72fps. The same technique could dramatically improve Garmin's golf course rendering—imagine wind-driven grass across 43,000 courses with zero CPU overhead. I'd love to bring that expertise here."</p>
             </div>
         </section>
 
@@ -926,7 +1331,7 @@
 
         <!-- NEW: Advanced Shader Techniques -->
         <section class="bg-slate-800 rounded-2xl p-8 shadow-xl border border-slate-700">
-            <h2 class="text-3xl font-bold text-white mb-6 border-b border-slate-700 pb-4">Advanced Shader Techniques for Embedded</h2>
+            <h2 class="text-3xl font-bold text-white mb-6">Advanced Shader Techniques for Embedded</h2>
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div class="space-y-6">
@@ -1067,7 +1472,7 @@
                         <p><b class="text-white">S:</b> Orion team needed real-time cloth/effects on Quest hardware—impossible with traditional simulation.</p>
                         <p><b class="text-white">T:</b> Find a way to ship Houdini-quality simulation on mobile VR at 72fps.</p>
                         <p><b class="text-white">A:</b> Built Python/Houdini pipeline for Vertex Animation Textures (VATs). Baked simulation to textures, replayed on GPU. Built USD export pipeline for content interchange.</p>
-                        <p><b class="text-white">R:</b> Shipped complex effects on Quest. Became team standard. USD pipeline now used across multiple teams at Meta.</p>
+                        <p><b class="text-white">R:</b> Shipped complex effects on Quest. Became team standard. USD pipeline now used across multiple teams.</p>
                     </div>
                 </div>
                 
@@ -1085,7 +1490,7 @@
                     <div class="text-amber-400 font-bold text-lg mb-3">"How do you ensure quality at scale?"</div>
                     <div class="space-y-3 text-sm text-slate-300">
                         <p><b class="text-white">S:</b> Procedural avatar clothing generated thousands of variations—impossible to QA manually.</p>
-                        <p><b class="text-white">T:</b> Catch visual regressions automatically before they ship to users.</p>
+                        <p><b class="text-white">T:</b> Catch visual regressions automatically before they ship.</p>
                         <p><b class="text-white">A:</b> Implemented automated visual regression testing. Rendered procedural outputs, diffed against golden masters, flagged deviations above threshold.</p>
                         <p><b class="text-white">R:</b> Caught 3 critical intersection bugs before launch. QA time reduced from days to hours. This exact approach would work for Garmin's 43k courses.</p>
                     </div>
@@ -1094,7 +1499,7 @@
                 <div class="bg-slate-900/50 p-6 rounded-xl border border-cyan-500/30">
                     <div class="text-cyan-400 font-bold text-lg mb-3">"Tell me about your mentoring experience."</div>
                     <div class="space-y-3 text-sm text-slate-300">
-                        <p><b class="text-white">S:</b> Technical Artists across multiple Meta teams needed to level up in shaders, Python, TypeScript, and C++ to be effective with our tooling.</p>
+                        <p><b class="text-white">S:</b> Technical Artists across multiple teams needed to level up in shaders, Python, TypeScript, and C++ to be effective with our tooling.</p>
                         <p><b class="text-white">T:</b> Enable TAs to be self-sufficient with our Python APIs for Horizon Engine and Unreal tooling without creating bottlenecks on me.</p>
                         <p><b class="text-white">A:</b> Created internal training materials, ran shader workshops, paired on Python/TypeScript projects. Built well-documented APIs that TAs could extend themselves.</p>
                         <p><b class="text-white">R:</b> TAs I mentored became multipliers themselves—several now lead their own tool initiatives. The APIs I built are still used across teams.</p>
@@ -1127,7 +1532,7 @@
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                 <div class="bg-slate-800/60 p-6 rounded-xl">
-                    <h3 class="text-lg font-bold text-white mb-4">🎓 What You Taught at Meta</h3>
+                    <h3 class="text-lg font-bold text-white mb-4">🎓 What You Taught</h3>
                     <div class="space-y-3">
                         <div class="flex items-center gap-3 p-3 bg-slate-900/50 rounded-lg">
                             <span class="text-2xl">✨</span>
@@ -1165,7 +1570,7 @@
                     <div class="space-y-3">
                         <div class="bg-slate-900/50 p-4 rounded-lg border-l-4 border-cyan-500">
                             <div class="font-bold text-cyan-400 text-sm">Horizon Engine Python API</div>
-                            <p class="text-xs text-slate-300 mt-1">Designed Python bindings for Meta's internal Horizon Engine. Enabled TAs to automate asset processing, validation, and export without touching C++.</p>
+                            <p class="text-xs text-slate-300 mt-1">Designed Python bindings for internal Horizon Engine. Enabled TAs to automate asset processing, validation, and export without touching C++.</p>
                         </div>
                         <div class="bg-slate-900/50 p-4 rounded-lg border-l-4 border-violet-500">
                             <div class="font-bold text-violet-400 text-sm">Unreal Engine Tooling</div>
@@ -1181,7 +1586,7 @@
             
             <div class="bg-slate-800/50 p-4 rounded-lg border-l-4 border-pink-500">
                 <div class="text-white font-bold text-sm mb-2">🎤 How to Frame This for Garmin</div>
-                <p class="text-sm text-slate-300">"At Meta, I wasn't just building tools—I was building the <b>people</b> who use them. I mentored Technical Artists in shaders, Python, TypeScript, and C++. I designed the Python APIs for our Horizon Engine and Unreal tooling that TAs across multiple teams still use today. That's the kind of force-multiplier impact I'd bring to Garmin—not just shipping features, but raising the capabilities of the entire team."</p>
+                <p class="text-sm text-slate-300">"I wasn't just building tools—I was building the <b>people</b> who use them. I mentored Technical Artists in shaders, Python, TypeScript, and C++. I designed the Python APIs for our Horizon Engine and Unreal tooling that TAs across multiple teams still use today. That's the kind of force-multiplier impact I'd bring to Garmin—not just shipping features, but raising the capabilities of the entire team."</p>
             </div>
         </section>
 
@@ -1338,7 +1743,7 @@
                                 <li>• Statistical monitoring: if >5% of today's batch fails, alert the team</li>
                                 <li>• A/B comparison: diff new pipeline version against previous</li>
                             </ul>
-                            <p class="text-amber-400 text-xs italic">"I built visual regression testing at Meta for avatar clothing. We rendered each variation, diffed against golden masters, and flagged deviations. Same approach works for golf courses—render each hole from a few angles, diff automatically, human reviews only the outliers."</p>
+                            <p class="text-amber-400 text-xs italic">"I built visual regression testing for avatar clothing. We rendered each variation, diffed against golden masters, and flagged deviations. Same approach works for golf courses—render each hole from a few angles, diff automatically, human reviews only the outliers."</p>
                         </div>
                     </details>
                     
